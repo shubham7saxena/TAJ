@@ -1,0 +1,49 @@
+{% include "users/base.html" %}
+
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+              <a href="/judge" class="navbar-brand">TAJ</a>
+            </div>    
+        </div>
+    </div>
+    <br><br><br>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="col-md-8">
+            {% for problems in problem %}
+                <h2><b> {{problems.problemTitle}} </b></h2> 
+                <p><b>Read the problem statement</b></p>
+                {{problems.problemStatement | safe }}
+                <h4><b>Input Format</b></h4>
+                <p>{{problems.inputFormat | safe }}</p>
+                <h4><b>Output Format</b></h4>
+                <p>{{problems.outputFormat | safe }}</p>
+                <h4><b>Constraints</b></h4>
+                <p>{{problems.constraints | safe }}</p>
+                <h4><b>Sample Input</b></h4>
+                <p>{{problems.sampleInput | safe }}</p>
+                <h4><b>Sample Output</b></h4>
+                <p>{{problems.sampleOutput | safe }}</p>
+            </div>
+            <div class="col-md-4">
+            <h4>Submit your code here</h4>
+            <form action="/judge/submitsolution/" method="POST">{% csrf_token %}
+                <input type="hidden" value="{{problems.id}}" name="pid">
+                <input type="hidden" value="{{problems.contest_id}}" name="cid">
+                <textarea rows="25" cols="50" name="solutionBox" id="solutionBox"></textarea>
+                <br><br>
+                <select name="lid">
+                {% for l in language %}
+                    <option value="{{l.id}}">{{l.language}}</option>
+                {% endfor %}
+                </select>
+                <br><br>
+                <input type="submit" class="btn btn-primary" value="Submit">
+            </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    

@@ -1,0 +1,113 @@
+{% include "users/base.html" %}
+
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+              <a href="/judge/home" class="navbar-brand">TAJ-IIT Jodhpur</a>
+            </div>
+            <a href="/judge/newUser" type="button" class="btn btn-default navbar-btn pull-right" style="background:  #0099ff;">
+                Register Here
+            </a>  
+        </div>
+    </div>
+    <br><br><br><br>
+    <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="col-md-4"></div>
+      <div class="col-md-4" style="text-align: center;">
+        <h3><strong>Login</strong></h3>
+        <h4><i>Please login to continue</i></h4>
+        <hr>
+        <span id="errors" style="background-color:#a00;"></span>
+        <br><br>
+        <form role="form" id="loginForm"  action="javascript:login()" >
+          {% csrf_token %}
+          <div class="form-group" style="text-align: left;">
+          <label for="inputUsername">Username</label>
+          <input required type="text" class="form-control" id="username" placeholder="Enter username" name="username">
+          </div>
+          <div class="form-group" style="text-align: left;">
+          <label for="inputPassword">Password</label>
+          <input required type="password" class="form-control" id="password" placeholder="Password" name="password">
+          </div>
+          {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+          {% else %}
+            <input type="hidden" name="next" value="/judgev2/">
+          {% endif %}
+          <input type="submit" class="btn btn-primary" value="Login">
+        </form>
+        <hr>
+      </div>  
+      </div>
+    </div>
+  </div>
+</body>
+
+<script type="text/javascript">
+    function login(){
+      var username = document.getElementById("username").value;
+      var password = document.getElementById("password").value;
+      var done = false;
+      var error; 
+      if(!username && !password){
+        error = "Oh you must be having a name!"
+        $("#errors").html(error).addClass("badge");
+      }else if(!username){
+        error = "Oh you must be having a name!"
+        $("#errors").html(error).addClass("badge");
+      }else if(!password){
+        error = "Oh you must be having a passkey!"
+        $("#errors").html(error).addClass("badge");
+      }else{
+        done = true;
+      }
+      if(done){
+        var loginForm = $("#loginForm").serialize();
+        $.ajax({
+          type:"POST",
+          url:"/judge/login/",
+          dataType:"json",
+          data: loginForm,
+          success:function(data){
+            if(data.errors){
+              error = "Kindly register before continuing";
+              $("#errors").html(error).addClass("badge");
+              done=false;
+            }else{
+                window.location.href = "/judge"
+            }
+          }
+        });
+      }
+    }
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+</script>

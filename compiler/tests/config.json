@@ -1,0 +1,14 @@
+{
+  "slavePort": 2020,
+  "masterIP": "127.0.0.1",
+  "masterPort": 2021,
+  "extPort": 6029,
+  "dbHandler": "./tests/db-test.js",
+  "useFakeChroot": false,
+  "languages": {
+    "C": "./languages/C.js",
+    "CPP": "./languages/CPP.js",
+    "Java": "./languages/Java.js",
+    "Python": "./languages/Python.js"
+  }
+}

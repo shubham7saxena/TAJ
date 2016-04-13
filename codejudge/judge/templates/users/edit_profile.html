@@ -1,0 +1,220 @@
+{% include "users/base.html" %}
+<head>
+    <!-- Custom CSS -->
+    <style>
+        .badge-success {
+            background-color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+              <a href="#" class="navbar-brand">TAJ-IIT Jodhpur</a>
+            </div>    
+        </div>
+    </div>
+    <br><br><br><br>
+    <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="col-md-3">
+        <h4>Change Password</h4>
+        Please enter valid credentials to continue
+        <hr>
+        <span id="errors" style="background-color:#a00;"></span>
+        <br><br>
+        <form role="form" id="passwordChangeForm"  action="javascript:changePassword()" >
+          {% csrf_token %}
+          <div class="form-group">
+          <label for="inputUsername">Old Password</label>
+          <input required type="password" class="form-control" id="oldPassword" placeholder="Enter your old password" name="oldPassword">
+          </div>
+          <div class="form-group">
+          <label for="inputPassword">New Password</label>
+          <input required type="password" class="form-control" id="newPassword" placeholder="Enter your new password" name="newPassword">
+          </div>
+          <input type="submit" class="btn btn-primary" value="Change Password">
+        </form>
+        <hr>
+      </div>
+      <style type="text/css">
+          #your_col{border-left: 1px solid black;}
+      </style>
+      <div class="col-md-1" id="your_col">
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+      </div>
+      <div class = "col-md-3">
+            <h4>Edit Profile Picture</h4>
+            put the image of your choice
+            <hr>
+            {% if hacker.profileImage %}
+            <img src="{{MEDIA_URL}}{{hacker.profileImage}}" height="15%" width="60%">
+            {% else %}
+            <img src="{{MEDIA_URL}}avatar/student.png" height="15%" width="60%">
+            {% endif %}
+            <br><br>
+            <form action="/judge/changepic/" method="post" enctype="multipart/form-data">{% csrf_token %}
+                <p>
+                    <input id="id_image" type="file" class="" name="image">
+                </p>
+                <input class="btn btn-primary" type="submit" value="Change Profile Picture" />
+            </form>
+            <form action="/judge/removepic/" method="post" enctype="multipart/form-data">{% csrf_token %}
+                <input class="btn btn-primary" type="submit" value="Remove Profile Picture" />
+            </form>
+            <hr>
+      </div>
+      <div class="col-md-1" id="your_col">
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+      </div>
+      <div class="col-md-4">
+        <h4>Edit Profile</h4>
+        Edit your profile details here
+        <hr>
+        <span id="newUserErrors" style="background-color:#a00;"></span>
+        <br><br>
+        <form role="form" id="editUserForm" action = "javascript:editUser()">
+        {% csrf_token %}
+          <div class="form-group">
+            <label for="inputUsername">First Name</label>
+            <input required type="text" class="form-control" id="newFirstName" placeholder="Enter your name" name="newFirstName">
+          </div>
+          <div class="form-group">
+            <label for="inputUsername">Last Name</label>
+            <input required type="text" class="form-control" id="newLastName" placeholder="Edit your last name" name="newLastName">
+          </div>
+          <div class="form-group">
+            <label for="inputEmail">Email address</label>
+            <input required type="email" class="form-control" id="newUserEmail" placeholder="Enter new email id" name="newUserEmail">
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <hr></hr>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script type="text/javascript">
+    function changePassword(){
+      var oldPassword = document.getElementById("oldPassword").value;
+      var newPassword = document.getElementById("newPassword").value;
+      var done = false;
+      var error; 
+      if(!oldPassword && !newPassword){
+        error = "Please enter all the details as required"
+        $("#errors").html(error).addClass("badge");
+      }else if(!oldPassword){
+        error = "Please enter all the details as required"
+        $("#errors").html(error).addClass("badge");
+      }else if(!newPassword){
+        error = "Please enter all the details as required"
+        $("#errors").html(error).addClass("badge");
+      }else{
+        done = true;
+      }
+      if(done){
+        var passwordChangeForm = $("#passwordChangeForm").serialize();
+        $.ajax({
+          type:"POST",
+          url:"/judge/changePassword/",
+          dataType:"json",
+          data: passwordChangeForm,
+          success:function(data){
+            if(data.errors == 1){
+                error = "Your password has been set successfully";
+                $("#errors").html(error).addClass("badge badge-success");
+                done=true;
+                setInterval(function(){window.location.href = "/judge/home"},4000);
+            }else{
+                error = "Please check your details again";
+                $("#errors").html(error).addClass("badge");
+                done=false;
+            }
+          }
+        });
+      }
+    }
+    function editUser(){
+      var newFirstName = document.getElementById("newFirstName").value;
+      var newLastName = document.getElementById("newLastName").value;
+      var email = document.getElementById("newUserEmail").value;
+      var done = false;
+      var error;
+      if(!user && !password && !email){
+        error = "Oh you must be having a name!";
+        $("#newUserErrors").html(error).addClass("badge");
+      }else if(!user && !password){
+        error = "Oh you must be having a name!";
+        $("#newUserErrors").html(error).addClass("badge");  
+      }else if(!user && !email){
+        error = "Oh you must be having a name!";
+        $("#newUserErrors").html(error).addClass("badge");
+      }else if(!email && !password){
+        error = "You surely need a password friend!";
+        $("#newUserErrors").html(error).addClass("badge");
+      }else if(!user){
+        error = "Oh you must be having a name!";
+        $("#newUserErrors").html(error).addClass("badge");
+      }else if(!password){
+        error = "You surely need a password friend!";
+        $("#newUserErrors").html(error).addClass("badge");
+      }else if(!email){
+        error = "Haven't you got an email?";
+        $("#newUserErrors").html(error).addClass("badge");
+      }else if(user.toLowerCase()=="admin"){
+        error = "Admin is actually your daddy!";
+        $("#newUserErrors").html(error).addClass("badge");
+      }else{
+        done = true;
+      }
+      if(done){
+        var editUserForm = $("#editUserForm").serialize();
+        $.ajax({
+          type:"POST",
+          url:"/judge/register/",
+          dataType:"json",
+          data: editUserForm,
+          success:function(data){
+            if(data.errors){
+              error = "That fellow already exists!";
+              $("#newUserErrors").html(error).addClass("badge");
+              done=false;
+            }else{
+                window.location.href = "/judge"
+            }
+          }
+        });
+      }
+    }
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+</script>

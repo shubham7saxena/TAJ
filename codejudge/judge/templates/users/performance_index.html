@@ -1,0 +1,32 @@
+{% include "users/base.html" %}
+
+<head>
+    <style>
+        .ds-btn li{ list-style:none; float:left; padding:10px; }
+        .ds-btn li a span{padding-left:15px;padding-right:5px;width:100%;display:inline-block; text-align:left;}
+        .ds-btn li a span small{width:100%; display:inline-block; text-align:left;}
+    </style>
+</head>
+
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+              <a href="/judge/home" class="navbar-brand">TAJ-IIT Jodhpur</a>
+            </div> 
+        </div>
+    </div>
+    <br><br><br><br>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <ul class="ds-btn">
+            {% for c in courses %}
+                <li>
+                     <a class="btn btn-lg btn-success " href="/judge/course/{{c.id}}">
+                     <i class="glyphicon glyphicon-dashboard pull-left"></i><span>{{ c.courseName }}<br><small>{{ c.courseNumber }}</small></span></a> 
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>

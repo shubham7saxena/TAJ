@@ -1,0 +1,72 @@
+{% include "users/base.html" %} 
+
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+              <a href="/judge" class="navbar-brand">TAJ-IIT Jodhpur</a>
+            </div>    
+        </div>
+    </div>
+    <br><br><br>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="col-md-2">
+                <ul class="nav nav-pills nav-stacked">
+                  <li><a href="/judge/">Lab Sessions</a></li>
+                  <li><a href="/judge/submission">My Submissions</a></li>
+                  <li class="active"><a href="/judge/profile">Profile</a></li>
+                  <li><a href="/judge/logout">Logout</a></li>
+                </ul>
+            </div>
+            {% for h in hacker %}
+            <div class="col-md-2">
+                {% if h.profileImage %}
+                <img src="{{MEDIA_URL}}{{h.profileImage}}" height="15%" width="60%">
+                {% else %}
+                <img src="{{MEDIA_URL}}avatar/student.png" height="15%" width="60%">
+                {% endif %}
+                <br><br>
+            </div>
+            <div class="col-md-4">
+                <p><b>Username: </b>{{h.username}}</p>
+                <p><b>Email: </b>{{h.email}}</p>
+                {% if h.is_staff or h.is_superuser %}
+                <br>
+                {% else %}    
+                <p><b>Roll Number: </b>{{h.roll}}</p>
+                {% endif %}
+            </div> 
+            <div class="col-md-4"></div>
+            {% endfor %}
+        </div>
+        <a href="/judge/editProfile/" type="button" class="btn btn-default pull-right" style="background: #0099ff;">
+            Edit Profile
+        </a> 
+        {% if superuser == 1 %}
+        <br>
+        {% else %}
+            <div class = "col-md-12">
+                <h2><u>Performance Report</u></h2>
+                {% for cont,stats in data %}
+                    <p><strong> {{ cont }} </strong> </p>
+                    <table class="table table-striped table-hover ">
+                        <thead>
+                          <tr>
+                            <th>Problem Name</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for pro,sol in stats %}
+                          <tr>
+                            <td>{{ pro }}</td>
+                            <td>{{ sol }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                     </table>                
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
