@@ -32,10 +32,10 @@
                 <p><b>Username: </b>{{h.username}}</p>
                 <p><b>Email: </b>{{h.email}}</p>
                 {% if h.is_staff or h.is_superuser %}
-                <br>
                 {% else %}    
                 <p><b>Roll Number: </b>{{h.roll}}</p>
                 {% endif %}
+                <p><b>Name: </b>{{h.first_name}} {{h.last_name}}</p>
             </div> 
             <div class="col-md-4"></div>
             {% endfor %}

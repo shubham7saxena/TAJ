@@ -179,11 +179,6 @@ def contest(request, contestId):
     return render(request, 'users/contest.html', {'problem': problem})
 
 @login_required
-def course(request, courseId):
-    c = Contest.objects.filter(course_id=courseId)
-    return render(request, 'users/performance_courses.html', {'contests': c, 'course_id' : courseId})
-
-@login_required
 def profile(request):
     hacker = Hacker.objects.filter(username = request.session['username'])
     h = Hacker.objects.get(username=request.session['username'])
@@ -393,6 +388,26 @@ def performance(request):
 def performanceCumulative(request,courseId):
     s = Hacker.objects.filter(course__id = courseId)
     return render(request, 'users/performance_cumulative.html', {'students' : s})
+
+@login_required
+def course(request, courseId):
+    c = Contest.objects.filter(course_id=courseId)
+    return render(request, 'users/performance_courses.html', {'contests': c, 'course_id' : courseId})
+
+def performanceLab(request, courseId, contestId):
+    s = Hacker.objects.filter(course__id = courseId)
+    p = Problem.objects.filter(contest_id = contestId)
+    l1 = []
+    for stu in s:
+        l2 = [str(stu.roll)]
+        for pro in p:
+            sol = Solution.objects.filter(hacker_id = stu.id, problem_id = pro.id, status = 4)
+            if len(sol) > 0:
+                l2.append(1)
+            else:
+                l2.append(0)
+        l1.append(tuple(l2))
+    return render(request, 'users/performance_lab.html', {'problems' : p , 'data' : l1})
 
 def trial(request):
     return HttpResponse(11111111)

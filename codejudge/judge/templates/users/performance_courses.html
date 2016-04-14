@@ -25,13 +25,17 @@
                          <a class="btn btn-lg btn-primary" href="/judge/performanceCumulative/{{course_id}}/">
                          <i class="glyphicon glyphicon-user pull-left"></i><span>View Cumulative Report<br><small></small></span></a> 
                     </li>
+                    <li>
+                         <a class="btn btn-lg btn-primary" href="/judge/performanceIndividual/{{course_id}}/">
+                         <i class="glyphicon glyphicon-user pull-left"></i><span>View Individual Student Report<br><small></small></span></a> 
+                    </li>
                 </ul>
             </div>
             <div class = "col-md-12">
                 <ul class="ds-btn">
                 {% for c in contests %}
                     <li>
-                         <a class="btn btn-lg btn-success " href="#">
+                         <a class="btn btn-lg btn-success " href="/judge/performanceLab/{{course_id}}/{{c.id}}/">
                          <i class="glyphicon glyphicon-dashboard pull-left"></i><span>{{ c.contestName }}<br><small></small></span></a> 
                     </li>
                 {% endfor %}
