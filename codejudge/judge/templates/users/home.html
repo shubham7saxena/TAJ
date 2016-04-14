@@ -23,10 +23,20 @@
     <style>
     body {
         padding-top: 70px;
-        /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
     }
     li {
       padding-left: 15px;
+    }
+    .modal-body .form-horizontal .col-sm-2,
+    .modal-body .form-horizontal .col-sm-10 {
+        width: 100%
+    }
+
+    .modal-body .form-horizontal .control-label {
+        text-align: left;
+    }
+    .modal-body .form-horizontal .col-sm-offset-2 {
+        margin-left: 15px;
     }
     </style>
 </head>
@@ -50,7 +60,7 @@
                 </ul>
                 <ul class="nav navbar-nav pull-right">
                     <li>
-                        <a href="#"><span class="glyphicon glyphicon-phone-alt"></span> &nbsp <b>Contact</b></a>
+                        <a href="#" type="button" class="btn btn-default" data-toggle="modal" data-target="#myModalHorizontal"><span class="glyphicon glyphicon-phone-alt"></span> &nbsp <b>Contact</b></a>
                     </li>
                 </ul>
             </div>
@@ -58,6 +68,58 @@
         </div>
         <!-- /.container -->
     </nav>
+    <div class="modal fade" id="myModalHorizontal" tabindex="-1" role="dialog" 
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <button type="button" class="close" 
+                       data-dismiss="modal">
+                           <span aria-hidden="true">&times;</span>
+                           <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        Contact Administrator
+                    </h4>
+                </div>
+                
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    
+                    <form class="form-horizontal" role="form" id = "queryform">
+                      <div class="form-group">
+                        <label  class="col-sm-2 control-label"
+                                  for="inputEmail3">Email</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" 
+                            id="email" placeholder="Email" name="email" />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                              for="inputPassword3" >Your Concern</label>
+                        <div class="col-sm-10">
+                            <textarea rows="4" cols="72" name="query"  id="query" placeholder="Enter your query here"></textarea>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                          <button type="submit" class="btn btn-default">Submit</button>
+                        </div>
+                      </div>
+                    </form>
+                </div>
+                
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Page Content -->
     <div class="container">
@@ -102,3 +164,87 @@
 </body>
 
 </html>
+
+<script type="text/javascript">
+    function addUser(){
+      var user = document.getElementById("newUser").value;
+      var password = document.getElementById("newUserPassword").value;
+      var email = document.getElementById("newUserEmail").value;
+      var roll = document.getElementById("newUserRoll").value;
+      var done = false;
+      var error;
+      if(!user && !password && !email && !roll){
+        error = "Oh you must be having a name!";
+        $("#newUserErrors").html(error).addClass("badge");
+      }else if(!user && !password){
+        error = "Oh you must be having a name!";
+        $("#newUserErrors").html(error).addClass("badge");  
+      }else if(!user && !email){
+        error = "Oh you must be having a name!";
+        $("#newUserErrors").html(error).addClass("badge");
+      }else if(!email && !password){
+        error = "You surely need a password friend!";
+        $("#newUserErrors").html(error).addClass("badge");
+      }else if(!user){
+        error = "Oh you must be having a name!";
+        $("#newUserErrors").html(error).addClass("badge");
+      }else if(!password){
+        error = "You surely need a password friend!";
+        $("#newUserErrors").html(error).addClass("badge");
+      }else if(!email){
+        error = "Haven't you got an email?";
+        $("#newUserErrors").html(error).addClass("badge");
+      }else if(user.toLowerCase()=="admin"){
+        error = "Admin is actually your daddy!";
+        $("#newUserErrors").html(error).addClass("badge");
+      }else{
+        done = true;
+      }
+      if(done){
+        var addUserForm = $("#addUserForm").serialize();
+        $.ajax({
+          type:"POST",
+          url:"/judge/register/",
+          dataType:"json",
+          data: addUserForm,
+          success:function(data){
+            if(data.errors){
+              error = "That fellow already exists!";
+              $("#newUserErrors").html(error).addClass("badge");
+              done=false;
+            }else{
+                window.location.href = "/judge"
+            }
+          }
+        });
+      }
+    }
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+</script>

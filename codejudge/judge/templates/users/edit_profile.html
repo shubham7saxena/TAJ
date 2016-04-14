@@ -12,7 +12,7 @@
     <div class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-              <a href="#" class="navbar-brand">TAJ-IIT Jodhpur</a>
+              <a href="/judge/home/" class="navbar-brand">TAJ-IIT Jodhpur</a>
             </div>    
         </div>
     </div>
@@ -143,29 +143,26 @@
       var email = document.getElementById("newUserEmail").value;
       var done = false;
       var error;
-      if(!user && !password && !email){
+      if(!newFirstName && !newLastName && !email){
         error = "Oh you must be having a name!";
         $("#newUserErrors").html(error).addClass("badge");
-      }else if(!user && !password){
+      }else if(!newFirstName && !newLastName){
         error = "Oh you must be having a name!";
         $("#newUserErrors").html(error).addClass("badge");  
-      }else if(!user && !email){
+      }else if(!newFirstName && !email){
         error = "Oh you must be having a name!";
         $("#newUserErrors").html(error).addClass("badge");
-      }else if(!email && !password){
-        error = "You surely need a password friend!";
+      }else if(!email && !newLastName){
+        error = "You surely need a password";
         $("#newUserErrors").html(error).addClass("badge");
-      }else if(!user){
+      }else if(!newFirstName){
         error = "Oh you must be having a name!";
         $("#newUserErrors").html(error).addClass("badge");
-      }else if(!password){
-        error = "You surely need a password friend!";
+      }else if(!newLastName){
+        error = "You surely need a password";
         $("#newUserErrors").html(error).addClass("badge");
       }else if(!email){
         error = "Haven't you got an email?";
-        $("#newUserErrors").html(error).addClass("badge");
-      }else if(user.toLowerCase()=="admin"){
-        error = "Admin is actually your daddy!";
         $("#newUserErrors").html(error).addClass("badge");
       }else{
         done = true;
@@ -174,16 +171,19 @@
         var editUserForm = $("#editUserForm").serialize();
         $.ajax({
           type:"POST",
-          url:"/judge/register/",
+          url:"/judge/editUser/",
           dataType:"json",
           data: editUserForm,
           success:function(data){
-            if(data.errors){
-              error = "That fellow already exists!";
+            if(data.errors == 1){
+              error = "That email is already registered!";
               $("#newUserErrors").html(error).addClass("badge");
               done=false;
             }else{
-                window.location.href = "/judge"
+              error = "Your details have been successfully saved";
+              $("#newUserErrors").html(error).addClass("badge");
+              done=true;
+              setInterval(function(){window.location.href = "/judge/profile"},4000);
             }
           }
         });

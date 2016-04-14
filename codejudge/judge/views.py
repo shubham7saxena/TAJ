@@ -229,6 +229,23 @@ def editProfile(request):
     return render(request, 'users/edit_profile.html', {'hacker':h})
 
 @login_required
+def editUser(request):
+    h = Hacker.objects.get(username=request.session['username'])
+    error = 0
+    if request.method == "POST" and request.is_ajax():
+        newEmail = request.POST['newUserEmail']
+        user = Hacker.objects.filter(email=newEmail)
+        if len(user) == 1:
+            error = 1
+            return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
+        else:
+            h.first_name = request.POST['newFirstName']
+            h.last_name = request.POST['newLastName']
+            h.email = newEmail
+            h.save()
+            return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
+
+@login_required
 def success(request):
     return render(request, 'users/success.html')
 

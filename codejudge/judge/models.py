@@ -136,5 +136,15 @@ class Link(models.Model):
     LinkUrl = models.CharField(max_length=200)
     LinkDescription = models.CharField(max_length=200)
 
+    def __unicode__(self):
+        return self.LinkUrl
+
 class Notification(models.Model):
     NotificationText = models.TextField()
+
+    def __unicode__(self):
+        return str(self.id)
+
+class query(models.Model):
+    query_from = models.EmailField(max_length=255)
+    query_text = models.CharField(max_length=500)
