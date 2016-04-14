@@ -22,10 +22,17 @@ C socket server example
 #include <sys/resource.h> 
 #include <sys/wait.h>
 #include <curl/curl.h>
+#include <fstream>
+#include <sys/mman.h>
+
+#define MAX 1000
 
 using namespace std;
 
 int compare_files();
+
+static int *glob_var;
+
 
 void sig_handler(int signo)
 {
@@ -50,9 +57,15 @@ int setrlimit(int resource, const struct rlimit *rlim);
 int main(int argc , char *argv[])
 {
 
+
+	glob_var = (int *) mmap(NULL, sizeof *glob_var, PROT_READ | PROT_WRITE, 
+	                    MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+	*glob_var = 1;
+
 	pid_t pid = fork();
 
 	if(pid == 0){
+
 
 			// Signal Handlers
 
@@ -159,13 +172,24 @@ int main(int argc , char *argv[])
 			string input = root.get("input", "").asString();
 			string output = root.get("output", "5").asString();
 			string path = root.get("filepath", "5").asString();
+			int sol_id = root.get("sol_id", "2").asInt();
+			*glob_var = sol_id; 
 
 			// cout << "Path : " << path <<endl;
 
 			std::ofstream file("input.txt");
 			file << input;
 			file.close();
-			
+
+
+			// Clearing the data from 
+			std::ofstream ofs;
+			ofs.open("output.txt", std::ofstream::out | std::ofstream::trunc);
+			ofs.close();
+
+			ofs.open("out.txt", std::ofstream::out | std::ofstream::trunc);
+			ofs.close();
+
 			std::ofstream file_o("output.txt");
 			file_o << endl << endl;
 			file_o << output;
@@ -186,14 +210,14 @@ int main(int argc , char *argv[])
 		// Setting Up Resource Limit.
 
 		struct rlimit rl; 
-		
+		// time_limit = 1;
 		// First get the time limit on CPU 
 		getrlimit (RLIMIT_CPU, &rl); 
 		
 		// printf("\n Default value is : %lld\n", (long long int)rl.rlim_cur); 
 		
 		// Change the time limit 
-		rl.rlim_cur = time_limit; 
+		rl.rlim_cur = time_limit + 1; 
 		rl.rlim_max = time_limit + 1; 
 		// Now call setrlimit() to set the  
 		// changed value. 
@@ -229,40 +253,10 @@ int main(int argc , char *argv[])
 
 	else{
 
-		/////////////////////////////////////////////////////////////////////////////////
-		////////////////////// CURL REQUEST /////////////////////////////////////////////
-
-		CURL *curl;
-		CURLcode res;
-		
-		curl = curl_easy_init();
-		if(curl) {
-		  curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1:8000/judge/trail/");
-		  /* example.com is redirected, so we tell libcurl to follow redirection */ 
-		  curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-		
-		  /* Perform the request, res will get the return code */ 
-		  res = curl_easy_perform(curl);
-		  /* Check for errors */ 
-		  if(res != CURLE_OK)
-		    fprintf(stderr, "curl_easy_perform() failed: %s\n",
-		            curl_easy_strerror(res));
-		
-		  /* always cleanup */ 
-		  curl_easy_cleanup(curl);
-		}
-
-
+	
 
 		/////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////
-
-		// Compare output Files.....
-
-		int result = compare_files();
-		/////////////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////
-
 
 		int status = 5;
 		if ( waitpid(pid, &status, 0) == -1 ) {
@@ -278,62 +272,104 @@ int main(int argc , char *argv[])
 		cout << "Stats : " << status << endl;
 
 
+		/////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////
 
+		// Compare output Files.....
+
+		int result = compare_files();
+
+		cout << "Results : " << result << endl;
+
+		string result_str;
+		// files not matching
+		if(!result) result_str = "5";
+		else result_str = "4";
+		/////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////
+
+
+		/////////////////////////////////////////////////////////////////////////////////
+		////////////////////// CURL REQUEST /////////////////////////////////////////////
+
+		CURL *curl;
+		CURLcode res;
+
+		string url = "http://127.0.0.1:8000/judge/trail/";
+
+		int xx = *glob_var;
+		string sol_id_string = to_string(xx);
+		// cout << sol_id_string << "*" << endl;
+		url += "?sol_id=";
+		url += sol_id_string;
+
+		url += "&result=";
+		url += result_str;
+
+		// cout << url;
+		curl = curl_easy_init();
+		if(curl) {
+		  curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		  /* example.com is redirected, so we tell libcurl to follow redirection */ 
+		  // curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+		
+		  /* Perform the request, res will get the return code */ 
+		  res = curl_easy_perform(curl);
+		  /* Check for errors */ 
+		  if(res != CURLE_OK)
+		    fprintf(stderr, "curl_easy_perform() failed: %s\n",
+		            curl_easy_strerror(res));
+		
+		  /* always cleanup */ 
+		  curl_easy_cleanup(curl);
+		}
+
+		munmap(glob_var, sizeof *glob_var);
 
 
 
 	return 0;
 
 	}
-	// return 0;
+	return 0;
 }
 
 
 int compare_files(){
-  char c1, c2;
-  char s1[MAX], s2[MAX];
-  char *p1;
-  char *p2;
-  FILE *fp1;
-  FILE *fp2;
-  p1 = s1;
-  p2 = s2;
+  ifstream infile, sourcefile;
+	char c,s;
+	bool flag_s = false, flag_i = false;
+	
+	sourcefile.open("out.txt");
+	infile.open("output.txt");
+	// Check open file error !
+	if(sourcefile.fail()) {
+		cout << "Error opending source file !";
+		return 0;
+	}
+	if(infile.fail()) {
+		cout << "Error opending compare file !";
+		return 0;
+	}
+	while(1){
+		sourcefile >> s;
+		infile >> c;
+		if(sourcefile.eof()) flag_s = true;
+		if(infile.eof()) flag_i = true;
+		
+		if((flag_s != flag_i)||(s!=c)){
 
-  fp1 = fopen("out.txt", "r");
-  fp2 = fopen("output.txt", "r");
-  if (fp1 == NULL || fp2 == NULL) {
-    printf("One or both of the files can't be used \n ");
-    return -1;
-  }
-  c1 = getc(fp1);
-  c2 = getc(fp2);
-  while ((c1 != EOF) && (c2 != EOF)) {	
-    for (; c1 != '\n'; p1++) {
-        *p1 = c1;
-        c1 = getc(fp1);
-    }
-    *p1 = '\0';
-
-    for (; c2 != '\n'; p2++) {
-        *p2 = c2;
-        c2 = getc(fp2);
-    }
-    
-    *p2 = '\0';
-    if ((strcmp(s1, s2)) != 0) {
-        // printf("%s\n", s1);
-        // printf("%s\n", s2);
-        return 0;
-    }
-    c1 = getc(fp1);
-    c2 = getc(fp2);
-    p1 = s1;
-    p2 = s2;
-  }
-  if (c1 != EOF || c2 != EOF){
-    printf("One of the files ended prematurely\n");
-    return 0;
-  }
-  return 1;
-}
+			cout << "Not Match !" << s << " " << c;
+			break;
+		}else if(flag_s||flag_i) {
+			cout << "Match !";
+			sourcefile.close();
+			infile.close();
+			return 1;
+			break;
+		}	
+	}
+	sourcefile.close();
+	infile.close();
+	return 0;
 }
