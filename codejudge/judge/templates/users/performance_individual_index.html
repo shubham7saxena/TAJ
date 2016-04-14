@@ -1,0 +1,69 @@
+{% include "users/base.html" %}
+
+<head>
+    <style>
+    </style>
+</head>
+
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+              <a href="/judge/home" class="navbar-brand">TAJ-IIT Jodhpur</a>
+            </div> 
+        </div>
+    </div>
+    <br><br><br><br>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class = "col-md-12">
+                <div class="input-group"> <span class="input-group-addon">Filter</span>
+                    <input id="filter" type="text" class="form-control" placeholder="Type your search query here...">
+                </div>
+                <br>
+                <table class="table table-striped table-hover ">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>User Name</th>
+                        <th>Roll Number</th>
+                        <th>Email Id</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody class="searchable">
+                      {% for s in students %}
+                      <tr>
+                        <td>{{s.first_name}} {{s.last_name}}</td>
+                        <td>{{s.username}}</td>
+                        <td>{{s.roll}}</td>
+                        <td>{{s.email}}</td>
+                        <td><a href = "/judge/performanceIndividual/{{course_id}}/{{s.id}}/">View Performance </a></td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                 </table>
+             </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        (function ($) {
+
+            $('#filter').keyup(function () {
+
+                var rex = new RegExp($(this).val(), 'i');
+                $('.searchable tr').hide();
+                $('.searchable tr').filter(function () {
+                    return rex.test($(this).text());
+                }).show();
+
+            })
+
+        }(jQuery));
+
+    });
+</script>

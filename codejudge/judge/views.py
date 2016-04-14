@@ -385,6 +385,7 @@ def performance(request):
     c = Course.objects.all()
     return render(request, 'users/performance_index.html',{'courses' : c})
 
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
 def performanceCumulative(request,courseId):
     s = Hacker.objects.filter(course__id = courseId)
     return render(request, 'users/performance_cumulative.html', {'students' : s})
@@ -392,8 +393,11 @@ def performanceCumulative(request,courseId):
 @login_required
 def course(request, courseId):
     c = Contest.objects.filter(course_id=courseId)
-    return render(request, 'users/performance_courses.html', {'contests': c, 'course_id' : courseId})
+    temp = Course.objects.get(pk = courseId)
+    name = temp.courseName
+    return render(request, 'users/performance_courses.html', {'contests': c, 'course_id' : courseId, 'CourseName' : name})
 
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
 def performanceLab(request, courseId, contestId):
     s = Hacker.objects.filter(course__id = courseId)
     p = Problem.objects.filter(contest_id = contestId)
@@ -408,6 +412,31 @@ def performanceLab(request, courseId, contestId):
                 l2.append(0)
         l1.append(tuple(l2))
     return render(request, 'users/performance_lab.html', {'problems' : p , 'data' : l1})
+
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def performanceIndividualIndex(request, courseId):
+    s = Hacker.objects.filter(course__id = courseId)
+    return render(request, 'users/performance_individual_index.html', {'students':s , 'course_id' : courseId})
+
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def performanceIndividual(request, courseId, hackerId):
+    h = Hacker.objects.get(pk = hackerId)
+    s = 0
+    cont = Contest.objects.filter(course = courseId)
+    l1 = []  
+    for c in cont:
+        ProSet = Problem.objects.filter(contest_id = c.id)
+        l3 = []
+        for p in ProSet:
+            ProSolSet = Solution.objects.filter(hacker_id = h.id, contest_id = c.id, problem_id = p.id, status = 4)
+            if ProSolSet:
+                l2 = (str(p.problemTitle),"accepted")
+            else:
+                l2 = (str(p.problemTitle),"rejected")
+            l3.append(l2)
+        l1.append((str(c.contestName),tuple(l3)))
+    print l1
+    return render(request, 'users/performance_individual.html', {'data':l1})
 
 def trial(request):
     return HttpResponse(11111111)
