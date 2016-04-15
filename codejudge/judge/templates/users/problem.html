@@ -29,6 +29,14 @@
             </div>
             <div class="col-md-4">
             <h4>Submit your code here</h4>
+
+
+            <pre style " margin-left: 0px;
+                           margin-top: 15px;
+                           height: 100%;"
+                        id="editor" style="float:left; margin-left:0%;"></pre>
+
+
             <form action="/judge/submitsolution/" method="POST">{% csrf_token %}
                 <input type="hidden" value="{{problems.id}}" name="pid">
                 <input type="hidden" value="{{problems.contest_id}}" name="cid">

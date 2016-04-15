@@ -131,6 +131,11 @@ class Solution(models.Model):
     def __unicode__(self):
         return str(self.id)
 
+class Comments(models.Model):
+    commentText = models.TextField()
+    hacker = models.ForeignKey(Hacker)
+    contest = models.ForeignKey(Contest)
+    problem = models.ForeignKey(Problem)
         
 class Link(models.Model):
     LinkUrl = models.CharField(max_length=200)
