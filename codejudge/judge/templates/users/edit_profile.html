@@ -85,10 +85,6 @@
             <label for="inputUsername">Last Name</label>
             <input required type="text" class="form-control" id="newLastName" placeholder="Edit your last name" name="newLastName">
           </div>
-          <div class="form-group">
-            <label for="inputEmail">Email address</label>
-            <input required type="email" class="form-control" id="newUserEmail" placeholder="Enter new email id" name="newUserEmail">
-          </div>
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
         <hr></hr>
@@ -140,29 +136,16 @@
     function editUser(){
       var newFirstName = document.getElementById("newFirstName").value;
       var newLastName = document.getElementById("newLastName").value;
-      var email = document.getElementById("newUserEmail").value;
       var done = false;
       var error;
-      if(!newFirstName && !newLastName && !email){
+      if(!newFirstName && !newLastName){
         error = "Oh you must be having a name!";
-        $("#newUserErrors").html(error).addClass("badge");
-      }else if(!newFirstName && !newLastName){
-        error = "Oh you must be having a name!";
-        $("#newUserErrors").html(error).addClass("badge");  
-      }else if(!newFirstName && !email){
-        error = "Oh you must be having a name!";
-        $("#newUserErrors").html(error).addClass("badge");
-      }else if(!email && !newLastName){
-        error = "You surely need a password";
-        $("#newUserErrors").html(error).addClass("badge");
+        $("#newUserErrors").html(error).addClass("badge"); 
       }else if(!newFirstName){
-        error = "Oh you must be having a name!";
+        error = "Oh you must be having a maiden name";
         $("#newUserErrors").html(error).addClass("badge");
       }else if(!newLastName){
-        error = "You surely need a password";
-        $("#newUserErrors").html(error).addClass("badge");
-      }else if(!email){
-        error = "Haven't you got an email?";
+        error = "You surely need a surname!";
         $("#newUserErrors").html(error).addClass("badge");
       }else{
         done = true;

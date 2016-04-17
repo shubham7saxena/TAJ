@@ -225,11 +225,19 @@ def profile(request):
         ProSet = Problem.objects.filter(contest_id = c.id)
         l3 = []
         for p in ProSet:
-            ProSolSet = Solution.objects.filter(hacker_id = h.id, contest_id = c.id, problem_id = p.id, status = 4)
-            if ProSolSet:
-                l2 = (str(p.problemTitle),"accepted")
+            ProSolSet = Solution.objects.filter(hacker_id = h.id, contest_id = c.id, problem_id = p.id)
+            if not ProSolSet:
+                l2 = (str(p.problemTitle),"Not Attempted")
             else:
-                l2 = (str(p.problemTitle),"rejected")
+                ProSolSet = Solution.objects.filter(hacker_id = h.id, contest_id = c.id, problem_id = p.id, status = 4)
+                if ProSolSet:
+                    l2 = (str(p.problemTitle),4)
+                else:
+                    ProSolSet = Solution.objects.filter(hacker_id = h.id, contest_id = c.id, problem_id = p.id, status = 5)
+                    if ProSolSet:
+                        l2 = (str(p.problemTitle),5)
+                    else:
+                        l2 = (str(p.problemTitle),3)
             l3.append(l2)
         l1.append((str(c.contestName),tuple(l3)))
     return render(request, 'users/profile.html', {'hacker':hacker, 'data': l1, 'superuser': s})  
@@ -261,18 +269,10 @@ def editProfile(request):
 def editUser(request):
     h = Hacker.objects.get(username=request.session['username'])
     error = 0
-    if request.method == "POST" and request.is_ajax():
-        newEmail = request.POST['newUserEmail']
-        user = Hacker.objects.filter(email=newEmail)
-        if len(user) == 1:
-            error = 1
-            return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
-        else:
-            h.first_name = request.POST['newFirstName']
-            h.last_name = request.POST['newLastName']
-            h.email = newEmail
-            h.save()
-            return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
+    h.first_name = request.POST['newFirstName']
+    h.last_name = request.POST['newLastName']
+    h.save()
+    return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
 
 @login_required
 def success(request):

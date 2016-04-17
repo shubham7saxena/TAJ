@@ -1,5 +1,21 @@
 {% include "users/base.html" %} 
 
+<head>
+    <style>
+    body {
+        padding-right: 50px;
+        padding-left: 50px;
+    }
+    .icon-red {
+        color: rgb(250, 57, 57);
+    }
+
+    .icon-green {
+        color: #00E025;
+    }
+    </style>
+</head>
+
 <body>
     <div class="navbar navbar-default navbar-fixed-top">
         <div class="container">
@@ -61,7 +77,15 @@
                           {% for pro,sol in stats %}
                           <tr>
                             <td>{{ pro }}</td>
-                            <td>{{ sol }}</td>
+                            {% if sol == 4 %}
+                            <td><i class="glyphicon glyphicon-ok icon-green"></i></td>
+                            {% elif sol == 5 %}
+                            <td><i class="glyphicon glyphicon-remove icon-red"></i></td>
+                            {% elif sol == 3 %}
+                            <td><i class="glyphicon glyphicon-time icon-red"></i></td>                          
+                            {% else %}
+                            <td>{{sol}}</td>
+                            {% endif %}
                           </tr>
                           {% endfor %}
                         </tbody>
