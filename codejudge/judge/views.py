@@ -459,11 +459,6 @@ def performance(request):
     c = Course.objects.all()
     return render(request, 'users/performance_index.html',{'courses' : c})
 
-@user_passes_test(lambda u: u.is_superuser or u.is_staff)
-def performanceCumulative(request,courseId):
-    s = Hacker.objects.filter(course__id = courseId)
-    return render(request, 'users/performance_cumulative.html', {'students' : s})
-
 @login_required
 def course(request, courseId):
     c = Contest.objects.filter(course_id=courseId)
