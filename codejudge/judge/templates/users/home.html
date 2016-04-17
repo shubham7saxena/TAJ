@@ -100,7 +100,7 @@
                         <label class="col-sm-2 control-label"
                               for="inputPassword3" >Your Concern</label>
                         <div class="col-sm-10">
-                            <textarea rows="4" cols="72" name="query"  id="query" placeholder="Enter your query here"></textarea>
+                            <textarea rows="4" cols="76.5" name="query"  id="query" placeholder="Enter your query here"></textarea>
                         </div>
                       </div>
                       <div class="form-group">
@@ -136,24 +136,26 @@
             <div class="col-sm-6">
                 <div class="panel panel-primary">
                   <div class="panel-heading"><span class="glyphicon glyphicon-bell"></span> General Notifications</div>
-                      <div class="panel-body" style="max-height: 10em;overflow-y: scroll;">
+                      <div class="panel-body" style="max-height: 15em;overflow-y: scroll;">
                          <ul>
                              {% for n in notif %}
                              <li>{{ n.NotificationText }}</li>
-                         </ul>
+                             <br>
                              {% endfor %}
+                         </ul>
                       </div>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="panel panel-primary">
                   <div class="panel-heading"><span class="glyphicon glyphicon-envelope"> Useful Links</div>
-                      <div class="panel-body" style="max-height: 10em;overflow-y: scroll;">
+                      <div class="panel-body" style="max-height: 15em;overflow-y: scroll;">
                          <ul>
                              {% for l in link %}
                              <li><a href="{{ l.LinkUrl }}">{{ l.LinkDescription }}</li>
-                         </ul>
+                             <br>
                              {% endfor %}
+                         </ul>
                       </div>
                 </div>
             </div>

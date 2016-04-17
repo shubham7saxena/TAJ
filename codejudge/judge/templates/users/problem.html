@@ -1,5 +1,12 @@
 {% include "users/base.html" %}
 
+{% load staticfiles %}
+
+<script src="{% static "ace-builds/src/ace.js" %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static "ace-builds/src/ext-language_tools.js" %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static "ace-builds/src/ext-statusbar.js" %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static "js/myjs.js" %}"></script>
+
 <body>
     <div class="navbar navbar-default navbar-fixed-top">
         <div class="container">
