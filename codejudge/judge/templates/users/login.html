@@ -4,9 +4,9 @@
     <div class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-              <a href="/judge/home" class="navbar-brand">TAJ-IIT Jodhpur</a>
+              <a href="/judge" class="navbar-brand">TAJ-IIT Jodhpur</a>
             </div>
-            <a href="/judge/newUser" type="button" class="btn btn-default navbar-btn pull-right" style="background:  #0099ff;">
+            <a href="/user/newUser" type="button" class="btn btn-default navbar-btn pull-right" style="background:  #0099ff;">
                 Register Here
             </a>  
         </div>
@@ -67,7 +67,7 @@
         var loginForm = $("#loginForm").serialize();
         $.ajax({
           type:"POST",
-          url:"/judge/login/",
+          url:"/user/login/",
           dataType:"json",
           data: loginForm,
           success:function(data){

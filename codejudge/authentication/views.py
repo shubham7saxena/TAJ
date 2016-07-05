@@ -17,15 +17,6 @@ import commands, unicodedata
 import random, string, os, subprocess
 from django.utils import timezone
 
-def home(request):
-    link = Link.objects.all()
-    notification = Notification.objects.all()
-    return render(request, 'users/home.html', {'link':link, 'notif': notification})
-
-def newUser(request):
-    return render(request, 'users/register.html')
-
-
 def userLogin(request):
     try:
         if request.session['username']:
@@ -57,7 +48,7 @@ def userLogout(request):
     del request.session['username']
     del request.session['password'] 
     logout(request)
-    return HttpResponseRedirect("/judge/home")
+    return HttpResponseRedirect("/judge")
 
 @login_required
 def changePassword(request):
@@ -84,7 +75,7 @@ def userLogout(request):
     del request.session['username']
     del request.session['password'] 
     logout(request)
-    return HttpResponseRedirect("/judge/home")
+    return HttpResponseRedirect("/judge")
 
 @login_required
 def profile(request):
