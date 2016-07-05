@@ -24,7 +24,6 @@ from django.utils import timezone
 def strip_accents(s):
    return ''.join(c for c in unicodedata.normalize('NFD', s)
                   if unicodedata.category(c) != 'Mn')
-# Create your views here.
 
 def check_submission_validity(contest):
     s_time = contest.startTime
@@ -82,57 +81,6 @@ def userLogin(request):
 
         return render(request, 'users/login.html')
 
-def staffLogin(request):
-    try:
-        if request.session['username']:
-            return HttpResponseRedirect("/judge/staffDashboard")
-    except KeyError:
-        context = RequestContext(request)
-        error = False
-        if request.method == 'POST' and request.is_ajax():
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(username=username, password=password)
-            if user != None:
-                if user.is_authenticated() and (user.is_staff or user.is_superuser):
-                    login(request, user)
-                    request.session['username']  = username
-                    request.session['password']  = password
-                    return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
-                else:
-                    error = True
-                    return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
-            else:
-                error = True
-                return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
-
-    return render(request, 'users/staff_login.html')
-
-def adminLogin(request):
-    try:
-        if request.session['username']:
-            return HttpResponseRedirect("/judge/adminDashboard")
-    except KeyError:
-        context = RequestContext(request)
-        error = False
-        if request.method == 'POST' and request.is_ajax():
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(username=username, password=password)
-            if user != None:
-                if user.is_authenticated() and user.is_superuser:
-                    login(request, user)
-                    request.session['username']  = username
-                    request.session['password']  = password
-                    return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
-                else:
-                    error = True
-                    return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
-            else:
-                error = True
-            return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
-
-    return render(request, 'users/admin_login.html')
 
 @login_required
 def changePassword(request):
@@ -150,23 +98,7 @@ def changePassword(request):
         else:
             error = 2
             return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
-            
-@user_passes_test(lambda u: u.is_superuser)
-def adminDashboard(request):
-    return render(request, 'users/admin_dashboard.html')
-
-@user_passes_test(lambda u: u.is_superuser)
-def addUser(request):
-    return render(request, 'users/add_staff.html')
-
-@user_passes_test(lambda u: u.is_superuser)
-def addFaculty(request):
-    return render(request, 'users/add_faculty.html')
-
-@user_passes_test(lambda u: u.is_superuser or u.is_staff)
-def staffDashboard(request):
-    return render(request, 'users/staff_dashboard.html')
-
+        
 @login_required
 def problem(request, contestId, problemId):
     contest = Contest.objects.get(id = contestId)
@@ -200,33 +132,8 @@ def contest(request, contestId):
 
 @login_required
 def profile(request):
-    hacker = Hacker.objects.filter(username = request.session['username'])
-    h = Hacker.objects.get(username=request.session['username'])
-    s = 0
-    if h.is_staff or h.is_superuser:
-        s = 1
-    cont = Contest.objects.all()
-    l1 = []  
-    for c in cont:
-        ProSet = Problem.objects.filter(contest_id = c.id)
-        l3 = []
-        for p in ProSet:
-            ProSolSet = Solution.objects.filter(hacker_id = h.id, contest_id = c.id, problem_id = p.id)
-            if not ProSolSet:
-                l2 = (str(p.problemTitle),"Not Attempted")
-            else:
-                ProSolSet = Solution.objects.filter(hacker_id = h.id, contest_id = c.id, problem_id = p.id, status = 4)
-                if ProSolSet:
-                    l2 = (str(p.problemTitle),4)
-                else:
-                    ProSolSet = Solution.objects.filter(hacker_id = h.id, contest_id = c.id, problem_id = p.id, status = 5)
-                    if ProSolSet:
-                        l2 = (str(p.problemTitle),5)
-                    else:
-                        l2 = (str(p.problemTitle),3)
-            l3.append(l2)
-        l1.append((str(c.contestName),tuple(l3)))
-    return render(request, 'users/profile.html', {'hacker':hacker, 'data': l1, 'superuser': s})  
+    hacker = Hacker.objects.get(username = request.session['username'])
+    return render(request, 'users/profile.html', {'hacker':hacker})  
 
 @login_required
 def changeProfilePic(request):
@@ -294,7 +201,6 @@ def submitSolution(request):
 
             
             sol.save()
-            # print "--------", sol.id
 
             sol_id = sol.id
 
@@ -403,95 +309,6 @@ def register(request):
         return HttpResponse(json.dumps({'errors': errors}),content_type='application/json')
     else:
         raise Http404
-
-@user_passes_test(lambda u: u.is_superuser)
-def registerStaff(request): 
-    errors = False
-    if request.method == 'POST' and request.is_ajax():
-        username = request.POST['user_name']
-        password = request.POST['pass_word']
-        email = request.POST['email']
-        query = Hacker.objects.filter(username=username)
-        if query:
-            errors = True
-        else:
-            user = Hacker.objects.create_staff_user(username, email, password)
-            user.save()            
-        return HttpResponse(json.dumps({'errors': errors}),content_type='application/json')
-    else:
-        raise Http404
-
-@user_passes_test(lambda u: u.is_superuser)
-def registerFaculty(request):
-    errors = False
-    if request.method == 'POST' and request.is_ajax():
-        username = request.POST['user_name']
-        password = request.POST['pass_word']
-        email = request.POST['email']
-        query = Hacker.objects.filter(username=username)
-        if query:
-            errors = True
-        else:
-            user = Hacker.objects.create_user(username, email, password)
-            user.is_staff = True
-            user.is_superuser = True
-            user.save()            
-        return HttpResponse(json.dumps({'errors': errors}),content_type='application/json')
-    else:
-        raise Http404
-
-@user_passes_test(lambda u: u.is_superuser or u.is_staff)
-def performance(request):
-    c = Course.objects.all()
-    return render(request, 'users/performance_index.html',{'courses' : c})
-
-@login_required
-def course(request, courseId):
-    c = Contest.objects.filter(course_id=courseId)
-    temp = Course.objects.get(pk = courseId)
-    name = temp.courseName
-    return render(request, 'users/performance_courses.html', {'contests': c, 'course_id' : courseId, 'CourseName' : name})
-
-@user_passes_test(lambda u: u.is_superuser or u.is_staff)
-def performanceLab(request, courseId, contestId):
-    s = Hacker.objects.filter(course__id = courseId)
-    p = Problem.objects.filter(contest_id = contestId)
-    l1 = []
-    for stu in s:
-        l2 = [str(stu.roll)]
-        for pro in p:
-            sol = Solution.objects.filter(hacker_id = stu.id, problem_id = pro.id, status = 4)
-            if len(sol) > 0:
-                l2.append(1)
-            else:
-                l2.append(0)
-        l1.append(tuple(l2))
-    return render(request, 'users/performance_lab.html', {'problems' : p , 'data' : l1})
-
-@user_passes_test(lambda u: u.is_superuser or u.is_staff)
-def performanceIndividualIndex(request, courseId):
-    s = Hacker.objects.filter(course__id = courseId)
-    return render(request, 'users/performance_individual_index.html', {'students':s , 'course_id' : courseId})
-
-@user_passes_test(lambda u: u.is_superuser or u.is_staff)
-def performanceIndividual(request, courseId, hackerId):
-    h = Hacker.objects.get(pk = hackerId)
-    s = 0
-    cont = Contest.objects.filter(course = courseId)
-    l1 = []  
-    for c in cont:
-        ProSet = Problem.objects.filter(contest_id = c.id)
-        l3 = []
-        for p in ProSet:
-            ProSolSet = Solution.objects.filter(hacker_id = h.id, contest_id = c.id, problem_id = p.id, status = 4)
-            if ProSolSet:
-                l2 = (str(p.problemTitle),"accepted")
-            else:
-                l2 = (str(p.problemTitle),"rejected")
-            l3.append(l2)
-        l1.append((str(c.contestName),tuple(l3)))
-    print l1
-    return render(request, 'users/performance_individual.html', {'data':l1})
 
 def trial(request):
     x = int(request.GET.get('sol_id', ''))

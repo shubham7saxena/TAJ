@@ -12,26 +12,21 @@
               <li><a href="/user/logout">Logout</a></li>
             </ul>
         </div>
-        {% for h in hacker %}
         <div class="col-md-2">
             {% if h.profileImage %}
             <img src="{{MEDIA_URL}}{{h.profileImage}}" height="15%" width="60%">
             {% else %}
-            <img src="{{MEDIA_URL}}avatar/student.png" height="15%" width="60%">
+            <img src="{{MEDIA_URL}}avatar/default.jpeg" height="15%" width="60%">
             {% endif %}
             <br><br>
         </div>
         <div class="col-md-4">
-            <p><b>Username: </b>{{h.username}}</p>
-            <p><b>Email: </b>{{h.email}}</p>
-            {% if h.is_staff or h.is_superuser %}
-            {% else %}    
-            <p><b>Roll Number: </b>{{h.roll}}</p>
-            {% endif %}
-            <p><b>Name: </b>{{h.first_name}} {{h.last_name}}</p>
+            <p><b>Username: </b>{{ h.username }}</p>
+            <p><b>Email: </b>{{ h.email }}</p>   
+            <p><b>Roll Number: </b>{{ h.roll }}</p>
+            <p><b>Name: </b>{{ h.first_name }} {{ h.last_name }}</p>
         </div> 
         <div class="col-md-4"></div>
-        {% endfor %}
     </div>
     <a href="/judge/editProfile/" type="button" class="btn btn-default pull-right" style="background: #0099ff;">
         Edit Profile

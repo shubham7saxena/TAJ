@@ -24,15 +24,6 @@ class AuthUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_staff_user(self, username, email, password):
-        user = self.create_user(username=username, email=email, password=password)
-        user.is_staff = True
-        user.is_superuser = False
-        user.save(using=self._db)
-        g = Group.objects.get(name="Teaching Assistants")
-        g.user_set.add(user) 
-        return user
-
 class Hacker(AbstractBaseUser, PermissionsMixin):
     
     alphanumeric = RegexValidator(r'^[0-9a-zA-Z]*$', message='Only alphanumeric characters are allowed.')
@@ -54,7 +45,7 @@ class Hacker(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['email']
     
     def get_full_name(self):
-        fullname = self.first_name+" "+self.last_name
+        fullname = str(self.first_name) + " " + str(self.last_name)
         return fullname
 
     def get_short_name(self):

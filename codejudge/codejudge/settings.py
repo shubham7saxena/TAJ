@@ -24,7 +24,6 @@ SECRET_KEY = 'vt1lbqskd0p^q$v2u@@7hnjtux&pcio(40bqog_*w4gb)vwia&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -60,7 +59,6 @@ ROOT_URLCONF = 'codejudge.urls'
 
 WSGI_APPLICATION = 'codejudge.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
@@ -77,6 +75,29 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            # insert your TEMPLATE_DIRS here
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.core.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+
+    }
+]
 
 
 # Static files (CSS, JavaScript, Images)
