@@ -2,12 +2,13 @@ from django.conf.urls import *
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
+from django.views.generic import RedirectView
 
 admin.site.site_header = 'CodeJudge-IIT Jodhpur Admin'
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', 'codejudge.views.home', name='home'),
+    url(r'^$', RedirectView.as_view(url='/judge'), name='home'),
     # url(r'^blog/', include('blog.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^judge/', include('judge.urls', namespace="judge")),

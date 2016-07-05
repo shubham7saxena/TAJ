@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'judge',
     'ckeditor',
     'v1',
+    'taggit',
 )
 
 MIDDLEWARE_CLASSES = (

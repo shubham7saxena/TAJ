@@ -4,3 +4,4 @@ django-ckeditor
 pytz
 requests
 dj-database-url
+django-taggit
