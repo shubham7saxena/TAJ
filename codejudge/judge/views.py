@@ -10,6 +10,7 @@ from django.contrib.sessions.models import Session
 from django.conf import settings
 from django.conf.urls.static import static
 from judge.models import *
+from authentication.models import *
 from datetime import *
 import json
 import socket
@@ -165,21 +166,6 @@ def addFaculty(request):
 @user_passes_test(lambda u: u.is_superuser or u.is_staff)
 def staffDashboard(request):
     return render(request, 'users/staff_dashboard.html')
-
-def home(request):
-    link = Link.objects.all()
-    notification = Notification.objects.all()
-    return render(request, 'users/home.html', {'link':link, 'notif': notification})
-
-def newUser(request):
-    return render(request, 'users/register.html')
-
-@login_required
-def userLogout(request):
-    del request.session['username']
-    del request.session['password'] 
-    logout(request)
-    return HttpResponseRedirect("/judge/home")
 
 @login_required
 def problem(request, contestId, problemId):

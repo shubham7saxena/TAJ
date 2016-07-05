@@ -8,10 +8,10 @@ admin.site.site_header = 'CodeJudge-IIT Jodhpur Admin'
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', RedirectView.as_view(url='/judge'), name='home'),
-    # url(r'^blog/', include('blog.urls')),
+    url(r'^$', RedirectView.as_view(url='/user/login')),
     url(r'^admin/', admin.site.urls),
     url(r'^judge/', include('judge.urls', namespace="judge")),
+    url(r'^user/', include('authentication.urls')),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^v1/', include('v1.urls')),
 

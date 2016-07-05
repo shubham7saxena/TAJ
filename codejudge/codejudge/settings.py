@@ -28,7 +28,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-LOGIN_URL = "/judge/login/"
+LOGIN_URL = "/user/login/"
 
 # Application definition
 
@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'judge',
+    'authentication',
     'ckeditor',
     'v1',
     'taggit',
@@ -88,7 +89,7 @@ MEDIA_ROOT = os.path.join(ENV_PATH, 'media/')
 SOLUTION_ROOT = str(os.getcwd())+ '/v1/userdata/'
 MEDIA_URL = "/media/"
 
-AUTH_USER_MODEL = 'judge.Hacker'
+AUTH_USER_MODEL = 'authentication.Hacker'
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
 CKEDITOR_CONFIGS = {
