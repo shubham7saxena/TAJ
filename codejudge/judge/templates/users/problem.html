@@ -2,11 +2,6 @@
 
 {% load staticfiles %}
 
-<script src="{% static "ace-builds/src/ace.js" %}" type="text/javascript" charset="utf-8"></script>
-<script src="{% static "ace-builds/src/ext-language_tools.js" %}" type="text/javascript" charset="utf-8"></script>
-<script src="{% static "ace-builds/src/ext-statusbar.js" %}" type="text/javascript" charset="utf-8"></script>
-<script src="{% static "js/myjs.js" %}"></script>
-
 <body>
     {% include "includes/navbar.html" %}
     <br><br><br>
@@ -29,28 +24,21 @@
                 <p>{{problems.sampleOutput | safe }}</p>
             </div>
             <div class="col-md-4">
-            <h4>Submit your code here</h4>
-
-
-            <pre style " margin-left: 0px;
-                           margin-top: 15px;
-                           height: 100%;"
-                        id="editor" style="float:left; margin-left:0%;"></pre>
-
-
-            <form action="/judge/submitsolution/" method="POST">{% csrf_token %}
-                <input type="hidden" value="{{problems.id}}" name="pid">
-                <input type="hidden" value="{{problems.contest_id}}" name="cid">
-                <textarea rows="25" cols="50" name="solutionBox" id="solutionBox"></textarea>
-                <br><br>
-                <select name="lid">
-                {% for l in language %}
+                <h4>Submit your code here</h4>
+                
+                <form action="/judge/submitsolution/" method="POST">{% csrf_token %}
+                    <input type="hidden" value="{{problems.id}}" name="pid">
+                    <input type="hidden" value="{{problems.contest_id}}" name="cid">
+                    <textarea rows="25" cols="50" name="solutionBox" id="solutionBox"></textarea>
+                    <br><br>
+                    <select name="lid">
+                    {% for l in language %}
                     <option value="{{l.id}}">{{l.language}}</option>
-                {% endfor %}
-                </select>
-                <br><br>
-                <input type="submit" class="btn btn-primary" value="Submit">
-            </form>
+                    {% endfor %}
+                    </select>
+                    <br><br>
+                    <input type="submit" class="btn btn-primary" value="Submit">
+                </form>
             </div>
             {% endfor %}
         </div>
