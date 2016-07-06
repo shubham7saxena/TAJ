@@ -3,6 +3,7 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, User, Group
 from ckeditor.fields import RichTextField
 from authentication.models import Hacker
+from taggit.managers import TaggableManager
 
 class Contest(models.Model):
     contestName = models.CharField(max_length=200, unique=True, null=False)
@@ -28,6 +29,8 @@ class Problem(models.Model):
     sampleInput = RichTextField(config_name='awesome_ckeditor')
     sampleOutput = RichTextField(config_name='awesome_ckeditor')
     solvedBy = models.PositiveSmallIntegerField(default=0)
+    #tags for problems
+    tags = TaggableManager()
     
     def __unicode__(self):
         return self.problemTitle

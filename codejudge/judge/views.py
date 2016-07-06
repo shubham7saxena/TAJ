@@ -133,6 +133,8 @@ def contest(request, contestId):
 @login_required
 def profile(request):
     hacker = Hacker.objects.get(username = request.session['username'])
+    print hacker
+    print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     return render(request, 'users/profile.html', {'hacker':hacker})  
 
 @login_required

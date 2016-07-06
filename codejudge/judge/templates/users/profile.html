@@ -6,25 +6,25 @@
     <div class="row-fluid">
         <div class="col-md-2">
             <ul class="nav nav-pills nav-stacked">
-              <li><a href="/judge/">Lab Sessions</a></li>
+              <li><a href="/judge/">Contests</a></li>
               <li><a href="/judge/submission">My Submissions</a></li>
               <li class="active"><a href="/judge/profile">Profile</a></li>
               <li><a href="/user/logout">Logout</a></li>
             </ul>
         </div>
         <div class="col-md-2">
-            {% if h.profileImage %}
-            <img src="{{MEDIA_URL}}{{h.profileImage}}" height="15%" width="60%">
+            {% if hacker.profileImage %}
+            <img src="{{MEDIA_URL}}{{hacker.profileImage}}" height="15%" width="60%">
             {% else %}
             <img src="{{MEDIA_URL}}avatar/default.jpeg" height="15%" width="60%">
             {% endif %}
             <br><br>
         </div>
         <div class="col-md-4">
-            <p><b>Username: </b>{{ h.username }}</p>
-            <p><b>Email: </b>{{ h.email }}</p>   
-            <p><b>Roll Number: </b>{{ h.roll }}</p>
-            <p><b>Name: </b>{{ h.first_name }} {{ h.last_name }}</p>
+            <p><b>Username: </b>{{ hacker.username }}</p>
+            <p><b>Email: </b>{{ hacker.email }}</p>   
+            <p><b>Roll Number: </b>{{ hacker.roll }}</p>
+            <p><b>Name: </b>{{ hacker.first_name }} {{ hacker.last_name }}</p>
         </div> 
         <div class="col-md-4"></div>
     </div>

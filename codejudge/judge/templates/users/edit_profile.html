@@ -13,7 +13,7 @@
     <br><br><br>
     <div class="container-fluid">
     <div class="row-fluid">
-      <div class="col-md-3">
+      <div class="col-md-5">
         <h4>Change Password</h4>
         Please enter valid credentials to continue
         <hr>
@@ -36,35 +36,11 @@
       <style type="text/css">
           #your_col{border-left: 1px solid black;}
       </style>
-      <div class="col-md-1" id="your_col">
+      <div class="col-md-2">
       <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
       </div>
-      <div class = "col-md-3">
-            <h4>Edit Profile Picture</h4>
-            put the image of your choice
-            <hr>
-            {% if hacker.profileImage %}
-            <img src="{{MEDIA_URL}}{{hacker.profileImage}}" height="15%" width="60%">
-            {% else %}
-            <img src="{{MEDIA_URL}}avatar/student.png" height="15%" width="60%">
-            {% endif %}
-            <br><br>
-            <form action="/judge/changepic/" method="post" enctype="multipart/form-data">{% csrf_token %}
-                <p>
-                    <input id="id_image" type="file" class="" name="image">
-                </p>
-                <input class="btn btn-primary" type="submit" value="Change Profile Picture" />
-            </form>
-            <form action="/judge/removepic/" method="post" enctype="multipart/form-data">{% csrf_token %}
-                <input class="btn btn-primary" type="submit" value="Remove Profile Picture" />
-            </form>
-            <hr>
-      </div>
-      <div class="col-md-1" id="your_col">
-      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-      </div>
-      <div class="col-md-4">
-        <h4>Edit Profile</h4>
+      <div class="col-md-5">
+        <h4>Personal Details</h4>
         Edit your profile details here
         <hr>
         <span id="newUserErrors" style="background-color:#a00;"></span>
@@ -117,7 +93,7 @@
                 error = "Your password has been set successfully";
                 $("#errors").html(error).addClass("badge badge-success");
                 done=true;
-                setInterval(function(){window.location.href = "/judge"},4000);
+                setInterval(function(){window.location.href = "/judge"},2000);
             }else{
                 error = "Please check your details again";
                 $("#errors").html(error).addClass("badge");
@@ -160,7 +136,7 @@
               error = "Your details have been successfully saved";
               $("#newUserErrors").html(error).addClass("badge");
               done=true;
-              setInterval(function(){window.location.href = "/judge/profile"},4000);
+              setInterval(function(){window.location.href = "/judge/profile"},2000);
             }
           }
         });
