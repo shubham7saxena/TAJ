@@ -2,12 +2,14 @@
 
 {% load staticfiles %}
 
+<link rel="stylesheet" type="text/css" href="{% static 'css/ace.css' %}" />
+
 <body>
     {% include "includes/navbar.html" %}
     <br><br><br>
     <div class="container-fluid">
         <div class="row-fluid">
-            <div class="col-md-8">
+            <div class="col-md-6">
             {% for problems in problem %}
                 <h2><b> {{problems.problemTitle}} </b></h2> 
                 <p><b>Read the problem statement</b></p>
@@ -29,7 +31,9 @@
                 <form action="/judge/submitsolution/" method="POST">{% csrf_token %}
                     <input type="hidden" value="{{problems.id}}" name="pid">
                     <input type="hidden" value="{{problems.contest_id}}" name="cid">
-                    <textarea rows="25" cols="50" name="solutionBox" id="solutionBox"></textarea>
+                    <div id="editorContainer">
+                        <div id="editor" name="solutionBox" id="solutionBox"></div>
+                    </div>
                     <br><br>
                     <select name="lid">
                     {% for l in language %}
@@ -44,4 +48,12 @@
         </div>
     </div>
 </body>
+
+<script src="{% static 'ace/ace.js' %}" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript">
+    var editor = ace.edit("editor");
+    editor.setTheme("{% static 'ace/theme/twilight' %}");
+    editor.getSession().setMode("{% static 'ace/mode/python' %}");
+</script>
     
