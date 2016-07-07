@@ -46,10 +46,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'judge',
-    'authentication',
+    'apps.judge',
+    'apps.authentication',
     'ckeditor',
-    'v1',
+    'apps.v1',
     'taggit',
 )
 

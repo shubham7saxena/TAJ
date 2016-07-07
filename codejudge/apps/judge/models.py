@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, User, Group
 from ckeditor.fields import RichTextField
-from authentication.models import Hacker
+from apps.authentication.models import Hacker
 from taggit.managers import TaggableManager
 
 class Contest(models.Model):

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from judge.models import *
+from apps.judge.models import *
 
 # Register your models here.
 admin.site.register(Problem)

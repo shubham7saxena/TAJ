@@ -9,8 +9,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.sessions.models import Session
 from django.conf import settings
 from django.conf.urls.static import static
-from judge.models import *
-from authentication.models import *
+from apps.judge.models import *
+from apps.authentication.models import *
 from datetime import *
 import json
 import socket
@@ -52,34 +52,6 @@ class Socket:
 
     def send(self, msg):
         sent = self.sock.send(msg)
-
-
-def userLogin(request):
-    try:
-        if request.session['username']:
-            return HttpResponseRedirect("/judge")
-    except KeyError:
-        context = RequestContext(request)
-        error = False
-        if request.method == 'POST' and request.is_ajax():
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(username=username, password=password)
-            if user != None:
-                if user.is_authenticated():
-                    login(request, user)
-                    request.session['username']  = username
-                    request.session['password']  = password
-                    return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
-                else:
-                    error = True
-                    return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
-            else:
-                error = True
-                return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
-
-        return render(request, 'users/login.html')
-
 
 @login_required
 def changePassword(request):
@@ -129,43 +101,6 @@ def contest(request, contestId):
     return render(request, 'users/contest.html', {'problem': problem})
 
 @login_required
-def profile(request):
-    hacker = Hacker.objects.get(username = request.session['username'])
-    return render(request, 'users/profile.html', {'hacker':hacker})  
-
-@login_required
-def changeProfilePic(request):
-    if request.method == 'POST':
-        m = Hacker.objects.get(username=request.session['username'])
-        m.profileImage = request.FILES['image']
-        m.save()
-        return HttpResponseRedirect('/judge/profile')
-    return HttpResponseForbidden('allowed only via POST')
-
-@login_required
-def removeProfilePic(request):
-    if request.method == 'POST':
-        m = Hacker.objects.get(username=request.session['username'])
-        m.profileImage = ""
-        m.save()
-        return HttpResponseRedirect('/judge/profile')
-    return HttpResponseForbidden('allowed only via POST')
-
-@login_required
-def editProfile(request):
-    h = Hacker.objects.get(username=request.session['username'])
-    return render(request, 'users/edit_profile.html', {'hacker':h})
-
-@login_required
-def editUser(request):
-    h = Hacker.objects.get(username=request.session['username'])
-    error = 0
-    h.first_name = request.POST['newFirstName']
-    h.last_name = request.POST['newLastName']
-    h.save()
-    return HttpResponse(json.dumps({'errors': error}),content_type='application/json')
-
-@login_required
 def success(request):
     return render(request, 'users/success.html')
 
@@ -174,11 +109,6 @@ def submission(request):
     h = Hacker.objects.get(username=request.session['username'])
     solution = Solution.objects.filter(hacker_id = h.id)
     return render(request, 'users/submission.html', {'solution': solution})
-
-
-@login_required
-def change(request):
-    return render(request, 'users/changepass.html')
 
 @login_required
 def submitSolution(request):
@@ -288,33 +218,6 @@ def submitSolution(request):
 
         elif var == 0:
             return HttpResponseForbidden('The contest has already ended')
-
-
-def register(request): 
-    errors = False
-    if request.method == 'POST' and request.is_ajax():
-        username = request.POST['user_name']
-        password = request.POST['pass_word']
-        email = request.POST['email']
-        roll = str(request.POST['roll'])
-        query = Hacker.objects.filter(username=username)
-        if query:
-            errors = True
-        else:
-            user = Hacker.objects.create_user(username, email, password)
-            user.roll = roll
-            user.save()
-            payload = {'username':username,'password':password,'email':email}
-            requests.get("http://localhost:8000/v1/userRegister",params=payload)
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            
-            request.session['username']  = username
-            request.session['password']  = password
-            
-        return HttpResponse(json.dumps({'errors': errors}),content_type='application/json')
-    else:
-        raise Http404
 
 def trial(request):
     x = int(request.GET.get('sol_id', ''))

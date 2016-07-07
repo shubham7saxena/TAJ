@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.sessions.models import Session
 from django.conf import settings
 from django.conf.urls.static import static
-from judge.models import *
+from apps.judge.models import *
 from datetime import *
 import json
 import requests
@@ -79,51 +79,8 @@ def userLogout(request):
 
 @login_required
 def profile(request):
-    hacker = Hacker.objects.filter(username = request.session['username'])
-    h = Hacker.objects.get(username=request.session['username'])
-    s = 0
-    if h.is_staff or h.is_superuser:
-        s = 1
-    cont = Contest.objects.all()
-    l1 = []  
-    for c in cont:
-        ProSet = Problem.objects.filter(contest_id = c.id)
-        l3 = []
-        for p in ProSet:
-            ProSolSet = Solution.objects.filter(hacker_id = h.id, contest_id = c.id, problem_id = p.id)
-            if not ProSolSet:
-                l2 = (str(p.problemTitle),"Not Attempted")
-            else:
-                ProSolSet = Solution.objects.filter(hacker_id = h.id, contest_id = c.id, problem_id = p.id, status = 4)
-                if ProSolSet:
-                    l2 = (str(p.problemTitle),4)
-                else:
-                    ProSolSet = Solution.objects.filter(hacker_id = h.id, contest_id = c.id, problem_id = p.id, status = 5)
-                    if ProSolSet:
-                        l2 = (str(p.problemTitle),5)
-                    else:
-                        l2 = (str(p.problemTitle),3)
-            l3.append(l2)
-        l1.append((str(c.contestName),tuple(l3)))
-    return render(request, 'users/profile.html', {'hacker':hacker, 'data': l1, 'superuser': s})  
-
-@login_required
-def changeProfilePic(request):
-    if request.method == 'POST':
-        m = Hacker.objects.get(username=request.session['username'])
-        m.profileImage = request.FILES['image']
-        m.save()
-        return HttpResponseRedirect('/judge/profile')
-    return HttpResponseForbidden('allowed only via POST')
-
-@login_required
-def removeProfilePic(request):
-    if request.method == 'POST':
-        m = Hacker.objects.get(username=request.session['username'])
-        m.profileImage = ""
-        m.save()
-        return HttpResponseRedirect('/judge/profile')
-    return HttpResponseForbidden('allowed only via POST')
+    hacker = Hacker.objects.get(username = request.session['username'])
+    return render(request, 'users/profile.html', {'hacker':hacker})  
 
 @login_required
 def editProfile(request):
@@ -165,42 +122,6 @@ def register(request):
             request.session['username']  = username
             request.session['password']  = password
             
-        return HttpResponse(json.dumps({'errors': errors}),content_type='application/json')
-    else:
-        raise Http404
-
-@user_passes_test(lambda u: u.is_superuser)
-def registerStaff(request): 
-    errors = False
-    if request.method == 'POST' and request.is_ajax():
-        username = request.POST['user_name']
-        password = request.POST['pass_word']
-        email = request.POST['email']
-        query = Hacker.objects.filter(username=username)
-        if query:
-            errors = True
-        else:
-            user = Hacker.objects.create_staff_user(username, email, password)
-            user.save()            
-        return HttpResponse(json.dumps({'errors': errors}),content_type='application/json')
-    else:
-        raise Http404
-
-@user_passes_test(lambda u: u.is_superuser)
-def registerFaculty(request):
-    errors = False
-    if request.method == 'POST' and request.is_ajax():
-        username = request.POST['user_name']
-        password = request.POST['pass_word']
-        email = request.POST['email']
-        query = Hacker.objects.filter(username=username)
-        if query:
-            errors = True
-        else:
-            user = Hacker.objects.create_user(username, email, password)
-            user.is_staff = True
-            user.is_superuser = True
-            user.save()            
         return HttpResponse(json.dumps({'errors': errors}),content_type='application/json')
     else:
         raise Http404

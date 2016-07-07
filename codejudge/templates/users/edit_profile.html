@@ -69,7 +69,7 @@
         var passwordChangeForm = $("#passwordChangeForm").serialize();
         $.ajax({
           type:"POST",
-          url:"/judge/changePassword/",
+          url:"/user/changePassword/",
           dataType:"json",
           data: passwordChangeForm,
           success:function(data){
@@ -108,7 +108,7 @@
         var editUserForm = $("#editUserForm").serialize();
         $.ajax({
           type:"POST",
-          url:"/judge/editUser/",
+          url:"/user/editUser/",
           dataType:"json",
           data: editUserForm,
           success:function(data){
@@ -120,7 +120,7 @@
               error = "Your details have been successfully saved";
               $("#newUserErrors").html(error).addClass("badge");
               done=true;
-              setInterval(function(){window.location.href = "/judge/profile"},2000);
+              setInterval(function(){window.location.href = "/user/profile"},2000);
             }
           }
         });
