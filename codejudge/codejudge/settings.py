@@ -10,11 +10,19 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from os.path import dirname,join,exists
 import dj_database_url
 from django.conf import settings
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+BASE_DIR = dirname(dirname(__file__))
+print BASE_DIR
+STATICFILES_DIRS = [join(BASE_DIR, 'static')]
+MEDIA_ROOT = join(BASE_DIR, 'media')
+print MEDIA_ROOT
 
+STATIC_URL = '/static/'
+SOLUTION_ROOT = str(os.getcwd())+ '/v1/userdata/'
+MEDIA_URL = "/media/"
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
@@ -59,12 +67,6 @@ ROOT_URLCONF = 'codejudge.urls'
 
 WSGI_APPLICATION = 'codejudge.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-
-# DATABASES = { 'default': dj_database_url.config() }
-# Internationalization
-# https://docs.djangoproject.com/en/1.7/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -80,35 +82,20 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            # insert your TEMPLATE_DIRS here
+            join(BASE_DIR, 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.core.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.debug',
-                'django.template.context_processors.i18n',
-                'django.template.context_processors.media',
-                'django.template.context_processors.static',
-                'django.template.context_processors.tz',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
-
-    }
+    },
 ]
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.7/howto/static-files/
-
-STATIC_URL = '/static/'
-
-ENV_PATH = os.path.abspath(os.path.dirname(__file__))
-MEDIA_ROOT = os.path.join(ENV_PATH, 'media/')
-SOLUTION_ROOT = str(os.getcwd())+ '/v1/userdata/'
-MEDIA_URL = "/media/"
 
 AUTH_USER_MODEL = 'authentication.Hacker'
 CKEDITOR_UPLOAD_PATH = "uploads/"
@@ -121,6 +108,7 @@ CKEDITOR_CONFIGS = {
 
 
 
+DATABASES = { 'default': dj_database_url.config() }
 
 DATABASES = {
     'default': {
