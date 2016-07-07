@@ -2,7 +2,6 @@ import socket
 import json
 
 class Socket:
-
     def __init__(self, sock=None):
         if sock is None:
             self.sock = socket.socket(

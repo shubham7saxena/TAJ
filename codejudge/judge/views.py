@@ -40,7 +40,6 @@ def check_submission_validity(contest):
 
 
 class Socket:
-
     def __init__(self, sock=None):
         if sock is None:
             self.sock = socket.socket(
@@ -107,9 +106,8 @@ def problem(request, contestId, problemId):
     if var == 1:
 
         problem = Problem.objects.filter(contest_id=contestId, id=problemId)
-        comment = Comments.objects.filter(problem_id=problemId, contest_id=contestId)
         language = Language.objects.all()
-        return render(request, 'users/problem.html', {'problem': problem, 'language':language, 'comment':comment})
+        return render(request, 'users/problem.html', {'problem': problem, 'language':language})
 
     elif var == 2:
         return HttpResponseForbidden('The contest has yet not started')
@@ -133,8 +131,6 @@ def contest(request, contestId):
 @login_required
 def profile(request):
     hacker = Hacker.objects.get(username = request.session['username'])
-    print hacker
-    print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     return render(request, 'users/profile.html', {'hacker':hacker})  
 
 @login_required
@@ -218,31 +214,39 @@ def submitSolution(request):
             inputFile = settings.MEDIA_ROOT + str(p.testInput)
             outputFile = settings.MEDIA_ROOT + str(p.testOutput)
             file1 = open(inputFile, 'r')
-            input = file1.read()
+            input_file = file1.read()
             file2 = open(outputFile, 'r')
             output = file2.read()
             sock = Socket()
 
-            file_name = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
+            """
+            saving the file from the solution box
+            """
+            file_name = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for i in range(10))
             text_file = open(file_name + ".cpp", "w")
             text_file.write(request.POST['solutionBox'])
             text_file.close()
 
 
+            """
+            compiling the file locally
+            """
             filepath = os.getcwd() + '/' + file_name + '.cpp'
             arg = "g++ " + filepath + ' -o ' + os.getcwd() + '/' + file_name
-            print "\n" 
             x = commands.getstatusoutput(arg)
             compile_status = x[1] 
 
+            """
+            check the status of the compiled file
+            """
             pos = compile_status.find('error')
             if pos != -1:
                 compile_status = compile_status[pos - 6:]
                 compile_status.replace("error","")
 
-            # os.system(arg)
-
-            #  checkeing whether the fil got compiled or not.
+            """
+            checkeing whether the file got compiled or not.
+            """
             file_compiled = False
 
             print "File address: " + os.getcwd() + '/' + file_name
@@ -265,7 +269,7 @@ def submitSolution(request):
                 temp = json.dumps({'id': sol.id, 
                      'filepath': filepath,
 
-                     'input': input,
+                     'input': input_file,
                      'output': output,
 
                      'sol_id': sol_id,

@@ -1,13 +1,4 @@
 {% include "users/base.html" %}
-<head>
-    <!-- Custom CSS -->
-    <style>
-        .badge-success {
-            background-color: green;
-        }
-    </style>
-</head>
-
 <body>
     {% include "includes/navbar.html" %}
     <br><br><br>
@@ -68,15 +59,8 @@
       var oldPassword = document.getElementById("oldPassword").value;
       var newPassword = document.getElementById("newPassword").value;
       var done = false;
-      var error; 
+      var error = "Please enter all the details as required"
       if(!oldPassword && !newPassword){
-        error = "Please enter all the details as required"
-        $("#errors").html(error).addClass("badge");
-      }else if(!oldPassword){
-        error = "Please enter all the details as required"
-        $("#errors").html(error).addClass("badge");
-      }else if(!newPassword){
-        error = "Please enter all the details as required"
         $("#errors").html(error).addClass("badge");
       }else{
         done = true;
@@ -91,7 +75,7 @@
           success:function(data){
             if(data.errors == 1){
                 error = "Your password has been set successfully";
-                $("#errors").html(error).addClass("badge badge-success");
+                $("#errors").html(error).addClass("badge");
                 done=true;
                 setInterval(function(){window.location.href = "/judge"},2000);
             }else{
@@ -142,32 +126,5 @@
         });
       }
     }
-    // using jQuery
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie != '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    var csrftoken = getCookie('csrftoken');
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-    $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
+    {% include "includes/js/ajax.js" %}
 </script>
