@@ -1,48 +1,50 @@
 {% include "users/base.html" %}
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}" />
 
 <body>
     <div class="navbar navbar-default navbar-fixed-top">
         <div class="container">
-            <div class="navbar-header">
-              <a href="/judge" class="navbar-brand">TAJ-IIT Jodhpur</a>
+            <div class="navbar-header" style="margin-left:-3.9%;">
+                <a href="/judge" class="navbar-brand">TAJ-IIT Jodhpur</a>
             </div>
-            <a href="/user/newUser" type="button" class="btn btn-default navbar-btn pull-right" style="background:  #0099ff;">
+            <a href="/user/newUser" type="button" class="btn btn-default navbar-btn pull-right nice-button" style="background:  #0099ff; margin-top:1%">
                 Register Here
             </a>  
         </div>
     </div>
     <br><br><br><br>
     <div class="container-fluid">
-    <div class="row-fluid">
-      <div class="col-md-4"></div>
-      <div class="col-md-4" style="text-align: center;">
-        <h3><strong>Login</strong></h3>
-        <h4><i>Please login to continue</i></h4>
-        <hr>
-        <span id="errors" style="background-color:#a00;"></span>
-        <br><br>
-        <form role="form" id="loginForm"  action="javascript:login()" >
-          {% csrf_token %}
-          <div class="form-group" style="text-align: left;">
-          <label for="inputUsername">Username</label>
-          <input required type="text" class="form-control" id="username" placeholder="Enter username" name="username">
-          </div>
-          <div class="form-group" style="text-align: left;">
-          <label for="inputPassword">Password</label>
-          <input required type="password" class="form-control" id="password" placeholder="Password" name="password">
-          </div>
-          {% if next %}
-            <input type="hidden" name="next" value="{{ next }}">
-          {% else %}
-            <input type="hidden" name="next" value="/judgev2/">
-          {% endif %}
-          <input type="submit" class="btn btn-primary" value="Login">
-        </form>
-        <hr>
-      </div>  
-      </div>
+        <div class="row-fluid">
+            <div class="col-md-4"></div>
+            <div class="col-md-4" style="text-align: center;">
+                <h3><strong>Login</strong></h3>
+                <h4><i>Please login to continue</i></h4>
+                <hr>
+                <span id="errors" style="background-color:#a00;"></span>
+                <br><br>
+                <form role="form" id="loginForm"  action="javascript:login()" >
+                    {% csrf_token %}
+                    <div class="form-group" style="text-align: left;">
+                    <label for="inputUsername">Username</label>
+                    <input required type="text" class="form-control" id="username" placeholder="Enter username" name="username">
+                    </div>
+                    <div class="form-group" style="text-align: left;">
+                    <label for="inputPassword">Password</label>
+                    <input required type="password" class="form-control" id="password" placeholder="Password" name="password">
+                    </div>
+                    {% if next %}
+                      <input type="hidden" name="next" value="{{ next }}">
+                    {% else %}
+                      <input type="hidden" name="next" value="/judgev2/">
+                    {% endif %}
+                    <input type="submit" class="btn btn-primary nice-button " value="Login">
+                </form>
+                <hr>
+            </div>  
+        </div>
     </div>
-  </div>
 </body>
 
 <script type="text/javascript">
@@ -50,15 +52,8 @@
       var username = document.getElementById("username").value;
       var password = document.getElementById("password").value;
       var done = false;
-      var error; 
-      if(!username && !password){
-        error = "Oh you must be having a name!"
-        $("#errors").html(error).addClass("badge");
-      }else if(!username){
-        error = "Oh you must be having a name!"
-        $("#errors").html(error).addClass("badge");
-      }else if(!password){
-        error = "Oh you must be having a passkey!"
+      var error = "Both the fields are compulsory"; 
+      if(!username || !password){
         $("#errors").html(error).addClass("badge");
       }else{
         done = true;
@@ -72,7 +67,7 @@
           data: loginForm,
           success:function(data){
             if(data.errors){
-              error = "Kindly register before continuing";
+              error = "please check the details or register";
               $("#errors").html(error).addClass("badge");
               done=false;
             }else{

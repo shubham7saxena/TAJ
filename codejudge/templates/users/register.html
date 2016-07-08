@@ -1,8 +1,12 @@
 {% include "users/base.html" %}
 
 <body>
-  {% include "includes/navbar.html" %}
-    <br><br><br><br>
+  <div class="navbar navbar-default navbar-fixed-top">
+      <div class="navbar-header" style="margin-left:2%;">
+          <a href="/judge" class="navbar-brand">TAJ-IIT Jodhpur</a>
+      </div>
+  </div>
+    <br><br><br>
   <div class="container-fluid">
         <div class="col-md-4"></div>
         <div class="col-md-4" style="text-align: center;">
@@ -29,7 +33,7 @@
               <label for="inputPassword">Password</label>
               <input required type="password" class="form-control" id="newUserPassword" placeholder="Password" name="pass_word">
             </div>
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="submit" class="btn btn-primary nice-button">Register</button>
           </form>
           <hr></hr>
         </div>
@@ -45,7 +49,7 @@
       var roll = document.getElementById("newUserRoll").value;
       var error = "all the fields are compulsory for registration"
       var done = false;
-      if(!user && !password && !email && !roll){
+      if(!user || !password || !email || !roll){
         $("#newUserErrors").html(error).addClass("badge");
       }else{
         done = true;

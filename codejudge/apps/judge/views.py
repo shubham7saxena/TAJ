@@ -20,10 +20,6 @@ from django.utils import timezone
 
 # Create your views here.
 
-def strip_accents(s):
-   return ''.join(c for c in unicodedata.normalize('NFD', s)
-                  if unicodedata.category(c) != 'Mn')
-
 class Socket:
     def __init__(self, sock=None):
         if sock is None:
@@ -57,6 +53,11 @@ def index(request):
 def contest(request, contestId):
     problem = Problem.objects.filter(contest_id=contestId)
     return render(request, 'users/contest.html', {'problem': problem})
+
+@login_required
+def allProblems(request):
+    problem = Problem.objects.all()
+    return render(request, 'users/allProblems.html', {'problemlist' : problem})
 
 @login_required
 def success(request):
