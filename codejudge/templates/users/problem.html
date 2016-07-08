@@ -3,13 +3,14 @@
 {% load staticfiles %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/ace.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}" />
 
 <body>
     {% include "includes/navbar.html" %}
     <br><br><br>
     <div class="container-fluid">
         <div class="row-fluid">
-            <div class="col-md-6">
+            <div class="col-md-12">
             {% for problems in problem %}
                 <h2><b> {{problems.problemTitle}} </b></h2> 
                 <p><b>Read the problem statement</b></p>
@@ -25,23 +26,35 @@
                 <h4><b>Sample Output</b></h4>
                 <p>{{problems.sampleOutput | safe }}</p>
             </div>
-            <div class="col-md-4">
-                <h4>Submit your code here</h4>
-                
+            <div class="col-md-8">
+                <br>
+                <div id = "editor-statusbar">
+                    <div class = "col-md-3">
+                        <select name="lid">
+                            {% for l in language %}
+                                <option value="{{l.id}}">{{l.language}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class = "col-md-5"></div>
+                    <div class = "col-md-2">
+                        <button type="button" class="btn btn-default btn-sm" id = "delete">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                        <a id="download-code" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-download-alt"></span></a>
+                    </div>
+                    <div class = "col-md-2">
+                        <div id="ace-statusbar">Status Bar: </div>
+                    </div>
+                </div>
                 <form action="/judge/submitsolution/" method="POST">{% csrf_token %}
                     <input type="hidden" value="{{problems.id}}" name="pid">
                     <input type="hidden" value="{{problems.contest_id}}" name="cid">
                     <div id="editorContainer">
                         <div id="editor" name="solutionBox" id="solutionBox"></div>
                     </div>
-                    <br><br>
-                    <select name="lid">
-                    {% for l in language %}
-                    <option value="{{l.id}}">{{l.language}}</option>
-                    {% endfor %}
-                    </select>
-                    <br><br>
-                    <input type="submit" class="btn btn-primary" value="Submit">
+                    <br>
+                    <input type="submit" class="button nice-button btn-green" value="Submit">
                 </form>
             </div>
             {% endfor %}
@@ -50,10 +63,50 @@
 </body>
 
 <script src="{% static 'ace/ace.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'ace/ext-language_tools.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'ace/ext-statusbar.js' %}" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
+$(document).ready(function(){
+
+/*    window.onbeforeunload = function() {
+      return "Data will be lost if you leave the page, are you sure?";
+    };*/
+
     var editor = ace.edit("editor");
-    editor.setTheme("{% static 'ace/theme/twilight' %}");
-    editor.getSession().setMode("{% static 'ace/mode/python' %}");
+    ace.require("document");
+    ace.require("ace/ext-language_tools");
+    editor.setTheme("ace/theme-twilight");
+    editor.getSession().setMode("ace/mode/python");
+    editor.getSession().setTabSize(4);
+    editorContent = editor.getValue();
+    editor.setFontSize(16);
+    var StatusBar = ace.require("ace/ext/statusbar").StatusBar;
+    var statusBar = new StatusBar(editor, document.getElementById("ace-statusbar"));
+
+    function downloadFile(filename, text, lang) {
+
+        // var ext = 'py';
+        var ext = lang_to_ext[$("#lid")
+            .val()];
+        console.log("ext    " + ext);
+
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename + '.' + ext);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
+
+    $("#download-code").click(function (){
+        downloadFile("code", editor.getValue(), '');
+    });
+
+});
 </script>
     

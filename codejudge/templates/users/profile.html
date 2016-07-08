@@ -1,6 +1,10 @@
 {% include "users/base.html" %} 
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}" />
 
 {% include "includes/navbar.html" %}
+
 <br><br><br>
 <div class="container-fluid">
     <div class="row-fluid">
@@ -26,9 +30,11 @@
             <p><b>Roll Number: </b>{{ hacker.roll }}</p>
             <p><b>Name: </b>{{ hacker.first_name }} {{ hacker.last_name }}</p>
         </div> 
-        <div class="col-md-4"></div>
-    </div>
-    <a href="/user/editProfile/" type="button" class="btn btn-default pull-right" style="background: #0099ff;">
-        Edit Profile
-    </a> 
+        <div class="col-md-4">
+             <a href="/user/editProfile/" type="button" class="button button-nice" style="background: #0099ff; float:right;">
+                Edit Profile
+            </a> 
+        </div>
+    </div> 
 </div>
+ 

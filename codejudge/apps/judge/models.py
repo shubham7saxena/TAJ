@@ -20,7 +20,6 @@ class Problem(models.Model):
     problemStatement = RichTextField(config_name='awesome_ckeditor')
     testInput = models.FileField(upload_to='testInput')
     testOutput = models.FileField(upload_to='testOutput')
-    #points = models.PositiveSmallIntegerField(blank=False, default = 10)
     timeLimit = models.PositiveSmallIntegerField()
     languagesAllowed = models.CommaSeparatedIntegerField(max_length=200)
     inputFormat = RichTextField(config_name='awesome_ckeditor')
@@ -36,7 +35,7 @@ class Problem(models.Model):
         return self.problemTitle
 
 class Language(models.Model):
-    language = models.CharField(max_length=200)
+    language = models.CharField(max_length=30, default="C")
     extension = models.CharField(max_length=10)
 
     def __unicode__(self):

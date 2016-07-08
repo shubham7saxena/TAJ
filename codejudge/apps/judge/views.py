@@ -3,7 +3,6 @@
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseForbidden
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import Group
 from django.template import RequestContext, loader
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.sessions.models import Session
@@ -18,6 +17,7 @@ import requests
 import commands, unicodedata
 import random, string, os, subprocess
 from django.utils import timezone
+from .languages import lang, lang_to_ext
 
 # Create your views here.
 
