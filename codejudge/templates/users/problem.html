@@ -30,15 +30,15 @@
                 <br>
                 <div id = "editor-statusbar">
                     <div class = "col-md-3">
-                        <select name="lid">
+                        <select id="lid">
                             {% for l in language %}
-                                <option value="{{l.id}}">{{l.language}}</option>
+                                <option value="{{l.extension}}">{{l.language}}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class = "col-md-5"></div>
                     <div class = "col-md-2">
-                        <button type="button" class="btn btn-default btn-sm" id = "delete">
+                        <button type="button" class="btn btn-default btn-sm" id = "clear-code">
                             <span class="glyphicon glyphicon-trash"></span>
                         </button>
                         <a id="download-code" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-download-alt"></span></a>
@@ -69,9 +69,9 @@
 <script type="text/javascript">
 $(document).ready(function(){
 
-/*    window.onbeforeunload = function() {
+    window.onbeforeunload = function() {
       return "Data will be lost if you leave the page, are you sure?";
-    };*/
+    };
 
     var editor = ace.edit("editor");
     ace.require("document");
@@ -85,12 +85,7 @@ $(document).ready(function(){
     var statusBar = new StatusBar(editor, document.getElementById("ace-statusbar"));
 
     function downloadFile(filename, text, lang) {
-
-        // var ext = 'py';
-        var ext = lang_to_ext[$("#lid")
-            .val()];
-        console.log("ext    " + ext);
-
+        var ext = $("#lid").children("option").filter(":selected").val();
         var element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
         element.setAttribute('download', filename + '.' + ext);
@@ -105,6 +100,20 @@ $(document).ready(function(){
 
     $("#download-code").click(function (){
         downloadFile("code", editor.getValue(), '');
+    });
+
+    $('#lid').change(function () {
+        ext = $('#lid').children("option").filter(":selected").val()
+        if(ext == "c" || ext == "cpp"){
+            editor.getSession().setMode("ace/mode/c_cpp");
+        }
+        else if(ext == "py"){
+            editor.getSession().setMode("ace/mode/python");   
+        }
+    });
+
+    $("#clear-code").click(function (){
+        editor.setValue("",1);
     });
 
 });
