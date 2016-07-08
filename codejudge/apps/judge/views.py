@@ -41,7 +41,6 @@ class Socket:
 @login_required
 def problem(request, contestId, problemId):
     contest = Contest.objects.get(id = contestId)
-    var = check_submission_validity(contest)
     problem = Problem.objects.filter(contest_id=contestId, id=problemId)
     language = Language.objects.all()
     return render(request, 'users/problem.html', {'problem': problem, 'language':language})
