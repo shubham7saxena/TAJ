@@ -92,9 +92,6 @@ def submitSolution(request):
         sol.solution = answer['msg']
         sol.save()
 
-        print settings.MEDIA_ROOT
-        print p.testInput
-        print "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4"
         inputFile = settings.MEDIA_ROOT + '/' + str(p.testInput)
         outputFile = settings.MEDIA_ROOT + '/' + str(p.testOutput)
         file1 = open(inputFile, 'r')
@@ -147,7 +144,6 @@ def trial(request):
     result = request.GET.get('result', '5')
 
     # Result = 1 means output matched.
-    print "Result is ", result
     x.status = int(result)
 
     x.save()
