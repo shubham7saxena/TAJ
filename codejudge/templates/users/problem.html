@@ -47,14 +47,14 @@
                         <div id="ace-statusbar">Status Bar: </div>
                     </div>
                 </div>
-                <form action="/judge/submitsolution/" method="POST">{% csrf_token %}
-                    <input type="hidden" value="{{problems.id}}" name="pid">
-                    <input type="hidden" value="{{problems.contest_id}}" name="cid">
+                <form method="POST">{% csrf_token %}
+                    <input type="hidden" value="{{problems.id}}" id="pid">
+                    <input type="hidden" value="{{problems.contest_id}}" id="cid">
                     <div id="editorContainer">
                         <div id="editor" name="solutionBox" id="solutionBox"></div>
                     </div>
                     <br>
-                    <input type="submit" class="button nice-button btn-green pull-right" value="Submit">
+                    <input type="submit" class="button nice-button btn-green pull-right" value="Submit" id="run-code">
                 </form>
             </div>
             {% endfor %}
@@ -69,9 +69,9 @@
 <script type="text/javascript">
 $(document).ready(function(){
 
-    window.onbeforeunload = function() {
+/*    window.onbeforeunload = function() {
       return "Data will be lost if you leave the page, are you sure?";
-    };
+    };*/
 
     var editor = ace.edit("editor");
     ace.require("document");
@@ -115,6 +115,24 @@ $(document).ready(function(){
     $("#clear-code").click(function (){
         editor.setValue("",1);
     });
+
+    $("#run-code").on("click",function(){
+        code = editor.getValue();
+        language = $("#lid").children("option").filter(":selected").val();
+        problem_id = $("#pid").val();
+        contest_id = $("#cid").val()
+        context = {
+            code : code,
+            language : language,
+            problem_id : problem_id,
+            contest_id : contest_id
+        }
+        $.post('/judge/submitsolution/', context, function () {
+            console.log("hurrrayyyyy");
+        });
+    });
+
+{% include "includes/js/ajax.js" %}
 
 });
 </script>

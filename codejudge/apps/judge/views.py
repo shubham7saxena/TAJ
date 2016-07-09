@@ -73,22 +73,18 @@ def submission(request):
 def submitSolution(request):
     if request.method == 'POST':
         h = Hacker.objects.get(username=request.session['username'])
-        c = Contest.objects.get(id = request.POST['cid'])
-        p = Problem.objects.get(id = request.POST['pid'])
-        l = Language.objects.get(id = request.POST['lid'])
-
+        c = Contest.objects.get(id = request.POST['contest_id'])
+        p = Problem.objects.get(id = request.POST['problem_id'])
+        l = Language.objects.get(extension = request.POST['language'])
         payload = {'fmt':'json', 'username':request.session['username'], 'password':request.session['password']}
         auth = requests.get("http://localhost:8000/v1/getAuthID",payload)
         answer = auth.json()
         sol = Solution(hacker=h, contest=c, problem =p , language=l, attempts=0, time=0.0, status=0)
-
-        
         sol.save()
-
         sol_id = sol.id
 
         url = 'http://localhost:8000/v1/file?authid={0}&op=upload&filepath={1}'.format(answer['authid'],str(sol.id) + "." + str(l.extension))
-        r = requests.post(url,request.POST['solutionBox'])
+        r = requests.post(url,request.POST['code'])
         url = 'http://localhost:8000/v1/file?authid={0}&op=download&filepath={1}'.format(answer['authid'],str(sol.id) + "." + str(l.extension))
         req = requests.get(url)
         answer = req.json()
@@ -96,77 +92,52 @@ def submitSolution(request):
         sol.solution = answer['msg']
         sol.save()
 
-        inputFile = settings.MEDIA_ROOT + str(p.testInput)
-        outputFile = settings.MEDIA_ROOT + str(p.testOutput)
+        print settings.MEDIA_ROOT
+        print p.testInput
+        print "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4"
+        inputFile = settings.MEDIA_ROOT + '/' + str(p.testInput)
+        outputFile = settings.MEDIA_ROOT + '/' + str(p.testOutput)
         file1 = open(inputFile, 'r')
         input_file = file1.read()
         file2 = open(outputFile, 'r')
         output = file2.read()
-        sock = Socket()
 
         """
         saving the file from the solution box
         """
         file_name = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for i in range(10))
-        text_file = open(file_name + ".cpp", "w")
-        text_file.write(request.POST['solutionBox'])
-        text_file.close()
+        # text_file = open(file_name + ".cpp", "w")
+        # text_file.write(request.POST['solutionBox'])
+        # text_file.close()
 
 
-        """
-        compiling the file locally
-        """
-        filepath = os.getcwd() + '/' + file_name + '.cpp'
-        arg = "g++ " + filepath + ' -o ' + os.getcwd() + '/' + file_name
-        x = commands.getstatusoutput(arg)
-        compile_status = x[1] 
+        # """
+        # compiling the file locally
+        # """
+        # filepath = os.getcwd() + '/' + file_name + '.cpp'
+        # arg = "g++ " + filepath + ' -o ' + os.getcwd() + '/' + file_name
+        # x = commands.getstatusoutput(arg)
+        # compile_status = x[1] 
 
-        """
-        check the status of the compiled file
-        """
-        pos = compile_status.find('error')
-        if pos != -1:
-            compile_status = compile_status[pos - 6:]
-            compile_status.replace("error","")
+        # """
+        # check the status of the compiled file
+        # """
+        # pos = compile_status.find('error')
+        # if pos != -1:
+        #     compile_status = compile_status[pos - 6:]
+        #     compile_status.replace("error","")
 
-        """
-        checkeing whether the file got compiled or not.
-        """
-        file_compiled = False
+        # """
+        # checkeing whether the file got compiled or not.
+        # """
+        # file_compiled = False
 
-        print "File address: " + os.getcwd() + '/' + file_name
-        file_compiled = os.path.isfile(os.getcwd() + '/' + file_name)
-
-
-        filepath = os.getcwd() + '/' + file_name
-        print filepath
+        # print "File address: " + os.getcwd() + '/' + file_name
+        # file_compiled = os.path.isfile(os.getcwd() + '/' + file_name)
 
 
-        if file_compiled is True:
-            print "\n \n ARG :- ", arg
-            os.system(arg)
-
-            print "Output :- ", output
-            # print filepath
-
-            print "File Name " + str(sol.id) + "." + str(l.extension)
-            sock.connect("127.0.0.1", 6029)
-            temp = json.dumps({'id': sol.id, 
-                 'filepath': filepath,
-
-                 'input': input_file,
-                 'output': output,
-
-                 'sol_id': sol_id,
-                 'time': p.timeLimit})
-            sock.send(temp)
-            return HttpResponseRedirect('/judge/success')
-
-        else:
-            sol.status = 1
-            sol.save()
-            # return HttpResponseRedirect('/judge/success')
-            return render(request, 'users/success_error.html', {'error': compile_status})
+        # filepath = os.getcwd() + '/' + file_name
+        # print filepath
 
 def trial(request):
     x = int(request.GET.get('sol_id', ''))

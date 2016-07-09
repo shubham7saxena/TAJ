@@ -17,6 +17,7 @@ from django.conf import settings
 BASE_DIR = dirname(dirname(__file__))
 print BASE_DIR
 STATICFILES_DIRS = [join(BASE_DIR, 'static')]
+print 
 MEDIA_ROOT = join(BASE_DIR, 'media')
 print MEDIA_ROOT
 

@@ -9,6 +9,7 @@
                 <ul class="nav nav-pills nav-stacked">
                   <li><a href="/judge">Contests</a></li>
                   <li class="active"><a href="#">My Submissions</a></li>
+                  <li><a href="/judge/allProblems">Problem Archive</a></li>
                 </ul>
             </div>
             <div class="col-md-10">
@@ -17,15 +18,16 @@
                     <thead>
                       <tr>
                         <th>Problem Title</th>
-                        <th>Your Submission</th>
+                        <th>Language</th>
                         <th>Status</th>
+                        <th>Your Submission</th>
                       </tr>
                     </thead>
                     <tbody>
                       {% for s in solution %}
                       <tr>
                         <td><a href="../{{s.contest_id}}/problem/{{s.problem_id}}">{{s.problem.problemTitle}}</a></td>
-                        <td><a href="{{s.solution}}">View Solution</a></td>
+                        <td>{{s.language}}</td>
                         {% if s.status == 0 %}
                             <td>Compiling...</td>
                         {% elif s.status == 1 %}
@@ -39,6 +41,7 @@
                         {% elif s.status == 5 %}
                             <td>Wrong Answer</td>
                         {% endif %}
+                        <td><a type="submit" class="btn btn-primary nice-button" href="{{s.solution}}">View Solution</a></td>
                       </tr>
                     {% endfor %}
                     </tbody>
