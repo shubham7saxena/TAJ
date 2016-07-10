@@ -36,12 +36,10 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class = "col-md-5"></div>
-                    <div class = "col-md-2">
-                        <button type="button" class="btn btn-default btn-sm" id = "clear-code">
-                            <span class="glyphicon glyphicon-trash"></span>
-                        </button>
-                        <a id="download-code" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-download-alt"></span></a>
+                    <div class = "col-md-4"></div>
+                    <div class = "col-md-3">
+                        <a id="clear-code" class="btn btn-default btn-sm pull-left"><span class="glyphicon glyphicon-trash"></span></a>
+                        <a id="download-code" class="btn btn-default btn-sm pull-left"><span class="glyphicon glyphicon-download-alt"></span></a>
                         <a id="full" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-fullscreen"></span></a>
                     </div>
                     <div class = "col-md-2">
@@ -55,6 +53,7 @@
                         <div id="editor" name="solutionBox" id="solutionBox"></div>
                     </div>
                     <br>
+                    <input type = "file" class = "pull-left" id = "code-uploader">
                     <input type="submit" class="button nice-button btn-green pull-right" value="Submit" id="run-code">
                 </form>
             </div>
@@ -149,6 +148,19 @@ $(document).ready(function(){
         $.post('/judge/submitsolution/', context, function () {
             console.log("hurrrayyyyy");
         });
+    });
+
+
+    $('#code-uploader').on("change", function(event){
+        var file = event.target.files[0]
+        if(file){
+            fr = new FileReader();
+            console.log("shubham");
+            fr.onload = function(e){
+                editor.setValue(e.target.result,1);
+            }
+            fr.readAsText(file);
+        }
     });
 
 {% include "includes/js/ajax.js" %}
