@@ -40,7 +40,8 @@
                     <div class = "col-md-3">
                         <a id="clear-code" class="btn btn-default btn-sm pull-left"><span class="glyphicon glyphicon-trash"></span></a>
                         <a id="download-code" class="btn btn-default btn-sm pull-left"><span class="glyphicon glyphicon-download-alt"></span></a>
-                        <a id="full" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-fullscreen"></span></a>
+                        <a id="full" class="btn btn-default btn-sm pull-left"><span class="glyphicon glyphicon-fullscreen"></span></a>
+                       <a id="save-code" class="btn btn-default btn-sm "><span class="glyphicon glyphicon-floppy-disk"></span></a>
                     </div>
                     <div class = "col-md-2">
                         <div id="ace-statusbar">Status Bar: </div>
@@ -155,12 +156,25 @@ $(document).ready(function(){
         var file = event.target.files[0]
         if(file){
             fr = new FileReader();
-            console.log("shubham");
             fr.onload = function(e){
                 editor.setValue(e.target.result,1);
             }
             fr.readAsText(file);
         }
+    });
+
+    $("#save-code").on("click",function(){
+        code = editor.getValue();
+        language = $("#lid").children("option").filter(":selected").val();
+        problem_id = $("#pid").val();
+        context = {
+            code : code,
+            language : language,
+            problem_id : problem_id
+        }
+        $.post('/judge/saveCode/', context, function (text) {
+            console.log(text);
+        });
     });
 
 {% include "includes/js/ajax.js" %}

@@ -11,6 +11,7 @@ urlpatterns = patterns('',
 	url(r'^success/$', views.success, name='index'),
 	url(r'^submission/$', views.submission, name='index'),
 	url(r'^allProblems/$', views.allProblems),
+	url(r'^saveCode/$', views.saveCode),
 	url(r'^trail/$', views.trial, name='index'),
 )+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

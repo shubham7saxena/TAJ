@@ -69,6 +69,15 @@ def submission(request):
     solution = Solution.objects.filter(hacker_id = h.id)
     return render(request, 'users/submission.html', {'solution': solution})
 
+
+def saveCode(request):
+    if request.method == "POST":
+        h = Hacker.objects.get(username=request.session['username'])
+        p = Problem.objects.get(id = request.POST['problem_id'])
+        l = Language.objects.get(extension = request.POST['language'])
+        request.session['code'] = request.POST['code']
+        return HttpResponse('Code Saved locally for two hours')
+
 @login_required
 def submitSolution(request):
     if request.method == 'POST':
